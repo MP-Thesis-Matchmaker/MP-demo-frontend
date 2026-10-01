@@ -1,0 +1,24 @@
+<div class="error-banner matcher-error" role="alert" *transloco="let t; prefix: 'components.matcher-error'">
+  <fa-icon [icon]="icon$$()" class="matcher-error__icon"></fa-icon>
+
+  <div class="matcher-error__content">
+    <p class="matcher-error__title">{{ t(error().kind + '.title') }}</p>
+    <p class="matcher-error__body">{{ t(error().kind + '.body', {runId: error().runId}) }}</p>
+
+    @switch (error().kind) {
+      @case ('unreachable') {
+        <code class="matcher-error__command">{{ serveCommand }}</code>
+      }
+      @case ('index-not-built') {
+        <a mat-stroked-button class="matcher-error__action" [routerLink]="['/', lang$$(), 'index']">{{ t('open-index') }}</a>
+      }
+    }
+
+    @if (error().message) {
+      <details class="matcher-error__details">
+        <summary>{{ t('details') }}</summary>
+        <code>{{ error().status ? error().status + ' · ' : '' }}{{ error().message }}</code>
+      </details>
+    }
+  </div>
+</div>

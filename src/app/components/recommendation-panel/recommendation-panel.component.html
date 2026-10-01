@@ -1,0 +1,22 @@
+<section class="recommendation" *transloco="let t; prefix: 'components.recommendation-panel'" aria-live="polite" [attr.aria-busy]="loading()">
+  <p class="themis-eyebrow mb-2">{{ t('eyebrow') }}</p>
+  <h2 class="recommendation__title">{{ t('title') }}</h2>
+
+  @if (loading()) {
+    <div class="recommendation__loading">
+      <mat-spinner diameter="28"></mat-spinner>
+      <div>
+        <p class="m-0">{{ t('loading', {seconds: elapsed$$()}) }}</p>
+        <p class="recommendation__hint">{{ t('loading-hint') }}</p>
+      </div>
+    </div>
+  } @else if (error(); as error) {
+    <themis-matcher-error [error]="error"></themis-matcher-error>
+  } @else if (answer()) {
+    <!-- One line on purpose: the paragraph keeps line breaks (pre-line), so template whitespace would show. -->
+    <p class="recommendation__answer">@for (segment of segments$$(); track $index) {@if (segment.kind === 'link') {<a [href]="segment.href" target="_blank" rel="noopener noreferrer">{{ segment.text }}</a>} @else {<span>{{ segment.text }}</span>}}</p>
+    <p class="recommendation__hint">{{ t('note') }}</p>
+  } @else {
+    <p class="recommendation__hint">{{ t('idle') }}</p>
+  }
+</section>

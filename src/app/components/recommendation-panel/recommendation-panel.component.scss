@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.recommendation {
+  padding: 1.25rem 1.5rem;
+  border-radius: .75rem;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-left: 3px solid var(--themis-accent);
+  background: var(--mat-sys-surface-container);
+
+  &__title {
+    margin: 0 0 1rem;
+    font-family: var(--themis-font-family-heading);
+    font-size: 1.35rem !important;
+    font-weight: 400 !important;
+  }
+
+  &__loading {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  &__answer {
+    margin: 0;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+    font-size: .95rem;
+  }
+
+  &__hint {
+    margin: .75rem 0 0;
+    font-size: .8rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}

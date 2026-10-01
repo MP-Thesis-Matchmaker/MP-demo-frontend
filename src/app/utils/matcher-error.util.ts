@@ -42,6 +42,10 @@ function isApiError(body: unknown): body is ApiError {
  * a network failure too. The UI copy for `unreachable` says so.
  */
 export function toMatcherError(error: unknown): MatcherError {
+  // A resource hands back non-Error failures wrapped, with the original as `cause`.
+  if (error instanceof Error && error.cause instanceof HttpErrorResponse) {
+    error = error.cause;
+  }
   if (!(error instanceof HttpErrorResponse)) {
     return {kind: 'unknown', status: 0, message: String(error)};
   }

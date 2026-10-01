@@ -16,6 +16,60 @@
         "light": "Farbmodus: hell (Klick für dunkel)",
         "dark": "Farbmodus: dunkel (Klick für System)"
       }
+    },
+    "match-card": {
+      "score-label": "Ähnlichkeitswert",
+      "score-hint": "Kosinus-Ähnlichkeit zwischen deiner Anfrage und dem am besten passenden Eintrag dieser Person (−1 bis 1). Ein Rangsignal, keine Wahrscheinlichkeit.",
+      "source-score-hint": "Beste Ähnlichkeit je Quelle",
+      "sources": {
+        "publication": "Publikationen",
+        "thesis_posting": "Ausschreibungen"
+      },
+      "external": "Keine UZH-Zugehörigkeit",
+      "external-hint": "Erscheint in ZORA als Mitautor:in, ist aber nicht als UZH-zugehörig erfasst.",
+      "counts": "{publications, plural, =0 {Keine passenden Publikationen} one {# passende Publikation} other {# passende Publikationen}} · {postings, plural, =0 {keine Ausschreibungen} one {# Ausschreibung} other {# Ausschreibungen}}",
+      "evidence": "Einträge, auf denen dieser Vorschlag beruht",
+      "show-all": "Alle {{count}} Einträge anzeigen"
+    },
+    "recommendation-panel": {
+      "eyebrow": "/v1/recommend",
+      "title": "Empfehlung",
+      "idle": "Hier erscheint die ausformulierte Empfehlung.",
+      "loading": "Empfehlung wird geschrieben … {{seconds}} s",
+      "loading-hint": "Mit konfiguriertem LLM kann das bis zu einer Minute dauern.",
+      "note": "Aus demselben Retrieval zusammengefasst. Ohne LLM erstellt der Matcher diese Liste aus einer Vorlage."
+    },
+    "matcher-error": {
+      "details": "Technische Details",
+      "open-index": "Zum Index",
+      "unreachable": {
+        "title": "Matcher nicht erreichbar",
+        "body": "Der Matcher hat nicht geantwortet oder ist mit einem Serverfehler abgebrochen (dieser erreicht den Browser ohne CORS-Header). Prüfe, ob er mit CORS für diese Adresse läuft, und schau in sein Log:"
+      },
+      "index-not-built": {
+        "title": "Noch kein Index",
+        "body": "Der Matcher hat keinen Suchindex, es gibt also nichts zum Abgleichen. Erstelle zuerst einen."
+      },
+      "index-run-in-progress": {
+        "title": "Indexierung läuft",
+        "body": "Lauf #{{runId}} indexiert noch. Es kann immer nur ein Lauf den Index belegen."
+      },
+      "database-unavailable": {
+        "title": "Datenbank antwortet nicht",
+        "body": "Der Matcher läuft, aber seine Postgres-Datenbank hat nicht geantwortet. Versuche es gleich noch einmal."
+      },
+      "validation": {
+        "title": "Anfrage abgelehnt",
+        "body": "Der Matcher hat die Anfrage nicht akzeptiert. Die Anfrage darf nicht leer sein."
+      },
+      "not-found": {
+        "title": "Nicht gefunden",
+        "body": "Der Matcher kennt diesen Eintrag nicht."
+      },
+      "unknown": {
+        "title": "Etwas ist schiefgelaufen",
+        "body": "Der Matcher hat einen unerwarteten Fehler gemeldet."
+      }
     }
   },
   "pages": {
@@ -49,6 +103,34 @@
         "disabled": "Deaktiviert",
         "toggle": "Offene Abschlussarbeiten einbeziehen",
         "coming-soon": "Matching, Empfehlungen und das Index-Panel folgen mit den nächsten Features. Diese Karte zeigt nur das Theme."
+      }
+    },
+    "search": {
+      "eyebrow": "Suche",
+      "title": "Beschreibe die Arbeit, die dir vorschwebt.",
+      "query-label": "Woran möchtest du arbeiten?",
+      "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
+      "query-hint": "Am besten in eigenen Worten. Strg/⌘ + Enter zum Suchen.",
+      "top-k": "Treffer",
+      "submit": "Suchen",
+      "examples-label": "Beispiele:",
+      "examples": {
+        "rag": "Retrieval-Augmented Generation für wissenschaftliche Texte",
+        "history": "Computergestützte Analyse historischer Dokumente",
+        "finance": "Klimarisiken auf Finanzmärkten"
+      },
+      "idle": {
+        "title": "Noch keine Suche",
+        "body": "Gib eine Anfrage ein oder wähle ein Beispiel. Du erhältst eine Rangliste von Betreuenden mit den passenden Einträgen und daneben eine ausformulierte Empfehlung."
+      },
+      "matches": {
+        "title": "Betreuende nach Rang",
+        "loading": "Abgleich läuft …",
+        "loading-hint": "Die erste Anfrage nach dem Start des Matchers lädt zusätzlich das Embedding-Modell und dauert daher länger.",
+        "empty": {
+          "title": "Keine Treffer",
+          "body": "Niemand im Index passt zu dieser Anfrage. Versuche, sie anders zu formulieren."
+        }
       }
     }
   }
