@@ -88,9 +88,15 @@
   },
   "pages": {
     "home": {
-      "eyebrow": "Universität Zürich · Masterprojekt 2026",
-      "title": "Die passende Betreuung für deine Arbeit finden.",
-      "tagline": "THEsis Matching and Information System",
+      "hero": {
+        "kicker": "Thesis Matching and Information System",
+        "arrive": "Fang bei der Arbeit an, die du machen willst.",
+        "lede": "Finde die passende Betreuung für deine Abschlussarbeit.",
+        "cta-start": "Anfrage starten",
+        "cta-how": "So funktioniert das Matching",
+        "status": "Ein benotetes Masterprojekt an der Universität Zürich. Kein offizieller Dienst der Universität.",
+        "skip": "Intro überspringen"
+      },
       "steps": {
         "describe": {
           "title": "Beschreiben",
@@ -108,7 +114,6 @@
       "disclaimer": "Orientierung, keine Empfehlung.",
       "query-label": "Woran möchtest du arbeiten?",
       "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
-      "cta-search": "Anfrage ausprobieren",
       "cta-index": "Zum Index"
     },
     "search": {

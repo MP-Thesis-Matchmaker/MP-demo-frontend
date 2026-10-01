@@ -1,37 +1,225 @@
-// The banner's layout: a large condensed headline with a serif tagline on the left, three numbered
-// steps on the right.
+// The intro video's Arrive and Title scenes, as CSS. Every animated piece is a `.themis-anim` (fade and rise,
+// theme/themis.scss) whose delay comes from the mode's timeline below, so the full and the short intro are
+// the same markup on two schedules. The video's Title scene starts at 3.0s, after Arrive.
+
+.home--full {
+  --t-eyebrow: 3.5s;
+  --t-word: 3.7s;
+  --stagger: .09s;
+  --t-lede: 4.6s;
+  --t-actions: 5.2s;
+  --t-status: 5.6s;
+  --dur-word: .9s;
+  --dur: .8s;
+}
+
+// Returning within the app: no Arrive, everything settled in well under a second.
+.home--short {
+  --t-eyebrow: 0s;
+  --t-word: .05s;
+  --stagger: .03s;
+  --t-lede: .15s;
+  --t-actions: .2s;
+  --t-status: .25s;
+  --dur-word: .5s;
+  --dur: .45s;
+}
+
+.home--none .themis-anim {
+  animation: none;
+}
+
+/* Hero */
+
+.home__hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  // Below the 64px sticky toolbar.
+  min-height: calc(100svh - 64px);
+}
+
+// The video's left-to-right darkening, made theme-aware: the copy sits on plain surface, the field shows on
+// the right.
+.home__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+      90deg,
+      var(--mat-sys-surface) 0%,
+      color-mix(in srgb, var(--mat-sys-surface) 75%, transparent) 45%,
+      color-mix(in srgb, var(--mat-sys-surface) 15%, transparent) 100%
+  );
+}
+
+.home__kicker {
+  margin: 0;
+  font-family: var(--themis-font-family-heading);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.home__arrive {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  padding: 0 1rem;
+  text-align: center;
+  pointer-events: none;
+  animation: themis-leave .6s var(--themis-ease-draw) 2.8s forwards;
+}
+
+.home__arrive-kicker {
+  --d: .7s;
+  --dur: .9s;
+  --rise: 12px;
+  font-size: clamp(.95rem, 1.4vw, 1.4rem);
+}
+
+.home__arrive-line {
+  --d: 1.3s;
+  --dur: .9s;
+  margin: 0;
+  font-family: var(--themis-font-family-serif);
+  font-style: italic;
+  font-size: clamp(1.9rem, 4.2vw, 4rem);
+  line-height: 1.15;
+}
 
 .home__title {
+  position: relative;
+  z-index: 1;
+  padding-block: 3rem 4rem;
+}
+
+.home__eyebrow {
+  --d: var(--t-eyebrow);
+  --rise: 12px;
+  font-size: clamp(.85rem, 1.2vw, 1.2rem);
+}
+
+.home__wordmark {
   // Overrides html-tags.styles.scss's compact h1; the encapsulated selector wins on specificity.
-  font-size: clamp(2.4rem, 5vw, 3.8rem) !important;
-  font-weight: 400 !important;
-  line-height: 1.05 !important;
-  letter-spacing: -.01em;
-  max-width: 12ch;
+  margin: .25rem 0 0 -.04em !important;
+  font-weight: 300 !important;
+  font-size: clamp(4.5rem, 14vw, 13rem) !important;
+  line-height: 1 !important;
+  letter-spacing: .04em;
 }
 
-.home__tagline {
-  font-size: 1.25rem;
-  line-height: 1.35;
-  max-width: 22ch;
+.home__letter {
+  --rise: 40px;
+  --dur: var(--dur-word);
+  --d: calc(var(--t-word) + var(--i) * var(--stagger));
+  display: inline-block;
 }
 
-.home__rules {
-  max-width: 24rem;
+.home__lede {
+  --d: var(--t-lede);
+  --rise: 14px;
+  margin: 1.25rem 0 0;
+  font-family: var(--themis-font-family-serif);
+  font-style: italic;
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  line-height: 1.2;
+  max-width: 24ch;
+}
+
+.home__actions {
+  --d: var(--t-actions);
+  margin-top: 2.5rem;
+  max-width: 36rem;
+}
+
+.home__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+// The video's pill call to action, in the banner's tracked capitals.
+.home__start {
+  height: 3.25rem !important;
+  padding-inline: 2rem !important;
+  border-radius: 1000px !important;
+  white-space: nowrap;
+  font-family: var(--themis-font-family-heading);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+.home__how-link {
+  font-family: var(--themis-font-family-heading);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--mat-sys-on-surface-variant) !important;
+
+  fa-icon {
+    margin-left: .4rem;
+  }
+}
+
+.home__status {
+  --d: var(--t-status);
+  --rise: 0px;
+  margin: 3.5rem 0 0;
+  font-size: .9rem;
+  max-width: 68ch;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.home__skip {
+  position: absolute !important;
+  z-index: 2;
+  right: 1rem;
+  bottom: 1rem;
+  color: var(--mat-sys-on-surface-variant) !important;
+}
+
+/* How matching works */
+
+.home__how {
+  padding-block: 4rem 5rem;
+}
+
+.home__how-title {
+  margin: 0 0 2.5rem !important;
+  font-size: 1rem !important;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--themis-accent) !important;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .home__steps {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 2rem 3rem;
 }
 
 .home__step {
   display: grid;
-  grid-template-columns: 3.5rem 1fr;
+  grid-template-columns: 3rem 1fr;
   align-items: baseline;
 }
 
@@ -43,7 +231,7 @@
 }
 
 .home__step-title {
-  // h2 from html-tags.styles.scss, set as the banner's tracked capitals.
+  // h3 from html-tags.styles.scss, set as the banner's tracked capitals.
   font-size: 1.25rem !important;
   text-transform: uppercase;
   letter-spacing: .12em;
@@ -55,11 +243,28 @@
   line-height: 1.55;
 }
 
+.home__how-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
 .home__disclaimer {
-  margin: 2rem 0 0 3.5rem;
+  margin: 0;
   color: var(--themis-accent);
 }
 
-.home__query {
-  max-width: 34rem;
+@media (max-width: 575.98px) {
+  .home__title {
+    padding-block: 2rem 4.5rem;
+  }
+
+  .home__start {
+    flex: 1 1 100%;
+  }
 }

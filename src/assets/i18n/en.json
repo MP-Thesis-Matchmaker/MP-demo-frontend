@@ -88,9 +88,15 @@
   },
   "pages": {
     "home": {
-      "eyebrow": "University of Zurich · Master's project 2026",
-      "title": "Finding the right supervisor match for you.",
-      "tagline": "THEsis Matching and Information System",
+      "hero": {
+        "kicker": "Thesis matching and information system",
+        "arrive": "Start with the work you want to do.",
+        "lede": "Find the right supervisor for your thesis.",
+        "cta-start": "Start a query",
+        "cta-how": "How matching works",
+        "status": "A graded master's project at the University of Zurich. Not an official university service.",
+        "skip": "Skip intro"
+      },
       "steps": {
         "describe": {
           "title": "Describe",
@@ -108,7 +114,6 @@
       "disclaimer": "Orientation, not endorsement.",
       "query-label": "What would you like to work on?",
       "query-placeholder": "e.g. a master's thesis in NLP on retrieval-augmented generation",
-      "cta-search": "Try a query",
       "cta-index": "See the index"
     },
     "search": {
