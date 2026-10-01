@@ -1,3 +1,5 @@
+@use 'core/vars' as vars;
+
 :host {
   display: block;
   position: sticky;
@@ -24,7 +26,71 @@
     }
   }
 
+  &__nav {
+    display: flex;
+    gap: .25rem;
+    margin-left: .5rem;
+  }
+
+  &__link {
+    gap: .5rem;
+    min-width: 0 !important;
+    color: var(--mat-sys-on-surface-variant) !important;
+
+    &--active {
+      color: var(--mat-sys-primary) !important;
+      background: var(--mat-sys-secondary-container);
+    }
+  }
+
+  &__health {
+    width: .65rem;
+    height: .65rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--mat-sys-outline);
+    transition: background-color .3s;
+
+    &--online {
+      background: light-dark(#{vars.success(50)}, #{vars.success(70)});
+      box-shadow: 0 0 0 3px light-dark(#{vars.success(90)}, #{vars.success(20)});
+    }
+
+    &--offline {
+      background: var(--mat-sys-error);
+      box-shadow: 0 0 0 3px var(--mat-sys-error-container);
+    }
+  }
+
   &__theme {
     font-size: 1.1rem !important;
+  }
+}
+
+// Phones: brand, two icon links, health dot, EN/DE and the theme button have to share ~360px.
+@media (max-width: 575.98px) {
+  .themis-toolbar {
+    &__brand {
+      font-size: 1.3rem;
+    }
+
+    &__nav {
+      margin-left: 0;
+      gap: 0;
+    }
+
+    &__link,
+    &__theme {
+      padding-inline: .6rem !important;
+    }
+  }
+
+  .mat-button-toggle-group {
+    --mat-standard-button-toggle-label-text-size: .8rem;
+  }
+
+  // The toggle label padding has no design token; :host keeps the override inside this component.
+  :host ::ng-deep .mat-button-toggle-label-content {
+    padding-inline: .6rem;
   }
 }

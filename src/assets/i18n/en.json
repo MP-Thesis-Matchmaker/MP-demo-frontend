@@ -15,6 +15,16 @@
         "system": "Colour mode: system (click for light)",
         "light": "Colour mode: light (click for dark)",
         "dark": "Colour mode: dark (click for system)"
+      },
+      "nav": {
+        "label": "Main",
+        "search": "Search",
+        "index": "Index"
+      },
+      "health": {
+        "unknown": "Checking the matcher at {{origin}} …",
+        "online": "Matcher online ({{origin}})",
+        "offline": "Matcher unreachable ({{origin}})"
       }
     },
     "match-card": {
@@ -95,18 +105,10 @@
         }
       },
       "disclaimer": "Orientation, not endorsement.",
-      "preview": {
-        "title": "Theme preview",
-        "subtitle": "The controls the matcher features will be built from.",
-        "query-label": "What would you like to work on?",
-        "query-placeholder": "e.g. a master's thesis in NLP on retrieval-augmented generation",
-        "match": "Find researchers",
-        "recommend": "Get a recommendation",
-        "index": "Index status",
-        "disabled": "Disabled",
-        "toggle": "Include open thesis postings",
-        "coming-soon": "Matching, recommendations and the index panel arrive with the next features. This card only previews the theme."
-      }
+      "query-label": "What would you like to work on?",
+      "query-placeholder": "e.g. a master's thesis in NLP on retrieval-augmented generation",
+      "cta-search": "Try a query",
+      "cta-index": "See the index"
     },
     "search": {
       "eyebrow": "Search",
@@ -168,7 +170,8 @@
         "postings": {
           "title": "Re-index thesis postings?",
           "body": "The matcher re-reads all scraped thesis postings and embeds what changed. No other run can start meanwhile."
-        }
+        },
+        "source-warning": "The run reads from the matcher's configured source (MATCHER_SOURCES_PATH; by default the checked-in samples, not Postgres). Indexed documents of this kind that are missing from that source are deleted. The current index was last built from: {{source}}."
       },
       "watched": {
         "running": "Run #{{id}} running",
@@ -191,7 +194,8 @@
         "title": "Run history",
         "refresh": "Refresh",
         "empty": "No runs recorded yet. Indexes built from the command line before run tracking existed do not appear here.",
-        "kind": "Source",
+        "kind": "Corpus",
+        "source": "Read from",
         "state": "State",
         "error": "Error",
         "started": "Started",

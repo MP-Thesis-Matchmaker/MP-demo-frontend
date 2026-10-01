@@ -15,6 +15,16 @@
         "system": "Farbmodus: System (Klick für hell)",
         "light": "Farbmodus: hell (Klick für dunkel)",
         "dark": "Farbmodus: dunkel (Klick für System)"
+      },
+      "nav": {
+        "label": "Hauptnavigation",
+        "search": "Suche",
+        "index": "Index"
+      },
+      "health": {
+        "unknown": "Matcher unter {{origin}} wird geprüft …",
+        "online": "Matcher erreichbar ({{origin}})",
+        "offline": "Matcher nicht erreichbar ({{origin}})"
       }
     },
     "match-card": {
@@ -95,18 +105,10 @@
         }
       },
       "disclaimer": "Orientierung, keine Empfehlung.",
-      "preview": {
-        "title": "Theme-Vorschau",
-        "subtitle": "Die Bedienelemente, aus denen die Matcher-Funktionen gebaut werden.",
-        "query-label": "Woran möchtest du arbeiten?",
-        "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
-        "match": "Forschende finden",
-        "recommend": "Empfehlung erhalten",
-        "index": "Index-Status",
-        "disabled": "Deaktiviert",
-        "toggle": "Offene Abschlussarbeiten einbeziehen",
-        "coming-soon": "Matching, Empfehlungen und das Index-Panel folgen mit den nächsten Features. Diese Karte zeigt nur das Theme."
-      }
+      "query-label": "Woran möchtest du arbeiten?",
+      "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
+      "cta-search": "Anfrage ausprobieren",
+      "cta-index": "Zum Index"
     },
     "search": {
       "eyebrow": "Suche",
@@ -168,7 +170,8 @@
         "postings": {
           "title": "Ausschreibungen neu indexieren?",
           "body": "Der Matcher liest alle gesammelten Ausschreibungen neu ein und bettet Geändertes ein. Solange kann kein anderer Lauf starten."
-        }
+        },
+        "source-warning": "Der Lauf liest aus der konfigurierten Quelle des Matchers (MATCHER_SOURCES_PATH; standardmässig die eingecheckten Beispieldaten, nicht Postgres). Indexierte Dokumente dieser Art, die in dieser Quelle fehlen, werden gelöscht. Der aktuelle Index wurde zuletzt erstellt aus: {{source}}."
       },
       "watched": {
         "running": "Lauf #{{id}} läuft",
@@ -191,7 +194,8 @@
         "title": "Verlauf",
         "refresh": "Aktualisieren",
         "empty": "Noch keine Läufe erfasst. Indexe, die vor der Laufverfolgung über die Kommandozeile erstellt wurden, erscheinen hier nicht.",
-        "kind": "Quelle",
+        "kind": "Korpus",
+        "source": "Gelesen aus",
         "state": "Status",
         "error": "Fehler",
         "started": "Gestartet",
