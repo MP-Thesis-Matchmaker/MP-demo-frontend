@@ -8,6 +8,7 @@
 // Self-hosted through @fontsource (no request to a font CDN), the way hui-client self-hosts Poppins.
 // (Explicit namespaces: Sass derives one from the file name, and `400` is not a valid identifier.)
 @use '@fontsource-variable/inter/index.css' as inter;
+@use '@fontsource/oswald/300.css' as oswald-300;
 @use '@fontsource/oswald/400.css' as oswald-400;
 @use '@fontsource/oswald/500.css' as oswald-500;
 @use '@fontsource/source-serif-4/400-italic.css' as source-serif-400-italic;
@@ -23,6 +24,40 @@
   --themis-accent: light-dark(#67529b, #c0a8f8);
   --themis-accent-muted: light-dark(#9080c8, #605088);
   --themis-accent-dim: light-dark(#cdc1e4, #403858);
+
+  // The landing video's three curves: `enter` for things arriving, `draw` for lines and fades, `settle`
+  // for things moving to a new place. DotField uses the same three in easing.util.ts.
+  --themis-ease-enter: cubic-bezier(.33, 1, .68, 1);
+  --themis-ease-draw: cubic-bezier(.65, 0, .35, 1);
+  --themis-ease-settle: cubic-bezier(.76, 0, .24, 1);
+
+  // The drifting record field behind the hero and the search scan (read by DotFieldComponent).
+  --themis-dot: light-dark(rgb(40 30 70 / .38), rgb(255 255 255 / .5));
+}
+
+/* Motion. `.themis-anim` elements fade in and rise; set --dur, --d (delay) and --rise per element. */
+
+@keyframes themis-enter {
+  from {
+    opacity: 0;
+    translate: 0 var(--rise, 16px);
+  }
+}
+
+@keyframes themis-leave {
+  to {
+    opacity: 0;
+  }
+}
+
+.themis-anim {
+  animation: themis-enter var(--dur, .7s) var(--themis-ease-enter) var(--d, 0s) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .themis-anim {
+    animation: none !important;
+  }
 }
 
 /* The banner's typographic pieces, reusable anywhere. */
