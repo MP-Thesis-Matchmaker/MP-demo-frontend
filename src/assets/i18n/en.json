@@ -15,7 +15,74 @@
         "system": "Colour mode: system (click for light)",
         "light": "Colour mode: light (click for dark)",
         "dark": "Colour mode: dark (click for system)"
+      },
+      "nav": {
+        "label": "Main",
+        "search": "Search",
+        "index": "Index"
+      },
+      "health": {
+        "unknown": "Checking the matcher at {{origin}} …",
+        "online": "Matcher online ({{origin}})",
+        "offline": "Matcher unreachable ({{origin}})"
       }
+    },
+    "match-card": {
+      "score-label": "Similarity score",
+      "score-hint": "Cosine similarity between your query and this person's best-matching record (−1 to 1). A ranking signal, not a probability.",
+      "source-score-hint": "Best similarity per source",
+      "sources": {
+        "publication": "Publications",
+        "thesis_posting": "Thesis postings"
+      },
+      "external": "No UZH affiliation",
+      "external-hint": "Appears as a co-author in ZORA but is not recorded as UZH-affiliated.",
+      "counts": "{publications, plural, =0 {No matching publications} one {# matching publication} other {# matching publications}} · {postings, plural, =0 {no thesis postings} one {# thesis posting} other {# thesis postings}}",
+      "evidence": "Records this match is based on",
+      "show-all": "Show all {{count}} records"
+    },
+    "recommendation-panel": {
+      "eyebrow": "/v1/recommend",
+      "title": "Recommendation",
+      "idle": "The written recommendation appears here.",
+      "loading": "Writing the recommendation … {{seconds}} s",
+      "loading-hint": "With an LLM configured this can take up to a minute.",
+      "note": "Synthesised from the same retrieval. Without an LLM, the matcher writes this list from a template."
+    },
+    "matcher-error": {
+      "details": "Technical details",
+      "open-index": "Go to the index",
+      "unreachable": {
+        "title": "Matcher not reachable",
+        "body": "The matcher did not answer, or it failed with a server error (those reach the browser without CORS headers). Check that it runs with CORS enabled for this origin, and look at its log:"
+      },
+      "index-not-built": {
+        "title": "No index yet",
+        "body": "The matcher has no search index, so there is nothing to match against. Build one first."
+      },
+      "index-run-in-progress": {
+        "title": "Index run in progress",
+        "body": "Run #{{runId}} is still indexing. Only one run can hold the index at a time."
+      },
+      "database-unavailable": {
+        "title": "Database not answering",
+        "body": "The matcher is up, but its Postgres database did not respond. Try again in a moment."
+      },
+      "validation": {
+        "title": "Request rejected",
+        "body": "The matcher did not accept the request. The query must not be empty."
+      },
+      "not-found": {
+        "title": "Not found",
+        "body": "The matcher does not know this entry."
+      },
+      "unknown": {
+        "title": "Something went wrong",
+        "body": "The matcher returned an unexpected error."
+      }
+    },
+    "confirm-dialog": {
+      "cancel": "Cancel"
     }
   },
   "pages": {
@@ -38,17 +105,107 @@
         }
       },
       "disclaimer": "Orientation, not endorsement.",
-      "preview": {
-        "title": "Theme preview",
-        "subtitle": "The controls the matcher features will be built from.",
-        "query-label": "What would you like to work on?",
-        "query-placeholder": "e.g. a master's thesis in NLP on retrieval-augmented generation",
-        "match": "Find researchers",
-        "recommend": "Get a recommendation",
-        "index": "Index status",
-        "disabled": "Disabled",
-        "toggle": "Include open thesis postings",
-        "coming-soon": "Matching, recommendations and the index panel arrive with the next features. This card only previews the theme."
+      "query-label": "What would you like to work on?",
+      "query-placeholder": "e.g. a master's thesis in NLP on retrieval-augmented generation",
+      "cta-search": "Try a query",
+      "cta-index": "See the index"
+    },
+    "search": {
+      "eyebrow": "Search",
+      "title": "Describe the thesis you have in mind.",
+      "query-label": "What would you like to work on?",
+      "query-placeholder": "e.g. a master's thesis in NLP on retrieval-augmented generation",
+      "query-hint": "Plain language works best. Ctrl/⌘ + Enter to search.",
+      "top-k": "Results",
+      "submit": "Search",
+      "examples-label": "Try:",
+      "examples": {
+        "rag": "Retrieval-augmented generation for scientific text",
+        "history": "Computational analysis of historical documents",
+        "finance": "Climate risk in financial markets"
+      },
+      "idle": {
+        "title": "Nothing searched yet",
+        "body": "Enter a query or pick an example. You get ranked supervisors with their matching records, and a written recommendation next to them."
+      },
+      "matches": {
+        "title": "Ranked supervisors",
+        "loading": "Matching …",
+        "loading-hint": "The first query after the matcher starts also loads the embedding model, which takes a while.",
+        "empty": {
+          "title": "No matches",
+          "body": "Nobody in the index matched this query. Try describing it differently."
+        }
+      }
+    },
+    "index": {
+      "eyebrow": "Index",
+      "title": "What the matcher searches.",
+      "lead": "THEMIS embeds ZORA publications and scraped thesis postings into one vector index. This page shows what is in it, the indexing history, and lets you refresh either source.",
+      "status": {
+        "title": "Current index",
+        "documents": "Documents",
+        "model": "Embedding model",
+        "dim": "Dimensions",
+        "max-seq": "Max. sequence length",
+        "truncated": "Truncated documents",
+        "sources": "Source",
+        "empty": {
+          "title": "No index yet",
+          "body": "Nothing has been indexed. Start a run on the right — the matcher answers queries once an index exists."
+        }
+      },
+      "trigger": {
+        "title": "Re-index",
+        "body": "Runs in the background on the matcher. Unchanged documents are skipped; only one run can hold the index at a time.",
+        "publications": "Re-index publications",
+        "postings": "Re-index thesis postings"
+      },
+      "confirm": {
+        "start": "Start run",
+        "publications": {
+          "title": "Re-index publications?",
+          "body": "The matcher re-reads all ZORA publications and embeds what changed. Depending on the corpus this takes minutes to hours, and no other run can start meanwhile."
+        },
+        "postings": {
+          "title": "Re-index thesis postings?",
+          "body": "The matcher re-reads all scraped thesis postings and embeds what changed. No other run can start meanwhile."
+        },
+        "source-warning": "The run reads from the matcher's configured source (MATCHER_SOURCES_PATH; by default the checked-in samples, not Postgres). Indexed documents of this kind that are missing from that source are deleted. The current index was last built from: {{source}}."
+      },
+      "watched": {
+        "running": "Run #{{id}} running",
+        "succeeded": "Run #{{id}} finished",
+        "failed": "Run #{{id}} failed",
+        "heartbeat": "Last heartbeat {{seconds}} s ago. Counts appear when the run finishes.",
+        "counts": "{embedded, plural, one {# document} other {# documents}} embedded, {skipped} unchanged, {deleted} removed."
+      },
+      "kinds": {
+        "publication": "Publications",
+        "thesis_posting": "Thesis postings",
+        "all": "All sources"
+      },
+      "states": {
+        "running": "Running",
+        "succeeded": "Succeeded",
+        "failed": "Failed"
+      },
+      "runs": {
+        "title": "Run history",
+        "refresh": "Refresh",
+        "empty": "No runs recorded yet. Indexes built from the command line before run tracking existed do not appear here.",
+        "kind": "Corpus",
+        "source": "Read from",
+        "state": "State",
+        "error": "Error",
+        "started": "Started",
+        "duration": "Duration",
+        "embedded": "Embedded",
+        "skipped": "Skipped",
+        "deleted": "Deleted",
+        "truncated": "Truncated",
+        "invalid": "Invalid",
+        "footnote": "Latest 20 runs. Counts are recorded when a run finishes."
       }
     }
   }

@@ -89,7 +89,9 @@ MATCHER_CORS_ORIGINS=http://localhost:4200 uv run themis-matcher serve   # HTTP 
 
 Everything above runs offline by default, with hash embeddings, the rule-based parser and
 template synthesis. If you want real embeddings and LLM answers in the demo, configure them in
-the backend's `.env`; this repo has nothing to configure for that.
+the backend's `.env`; this repo has nothing to configure for that. A real embedding model also
+needs the matcher's `embeddings` extra (`uv sync --package themis-matcher --extra embeddings`, which pulls
+in torch). Without it, `/v1/match` and `/v1/recommend` fail with a 500.
 
 **2. Frontend**, from this repository:
 
@@ -125,9 +127,11 @@ src/
   app/
     app.component.*  app.config.ts  app.routes.ts
     transloco.config.ts  transloco-loader.ts
-    components/        reusable UI (toolbar: language switch, theme toggle)
-    pages/             routed screens, lazy-loaded (home)
-    services/          theme, Font Awesome registration, Transloco helpers
+    components/        reusable UI: toolbar, match card, recommendation panel, matcher error, confirm dialog
+    pages/             routed screens, lazy-loaded: home, search, index
+    models/            matcher API wire types (mirrors backend-core's contracts)
+    services/          matcher API client, theme, Font Awesome registration, Transloco helpers
+    utils/             error mapping (toMatcherError), linkify
     guards/            lang.guard (the /:lang URL segment)
     constants/         languages and other app-wide constants
   assets/i18n/         en.json, de.json
@@ -166,20 +170,44 @@ remembers the choice in `localStorage` and sets both the CSS `color-scheme` (Mat
 `data-bs-theme` (Bootstrap). The details are in
 [`src/styles/README.md`](src/styles/README.md).
 
-## Planned features
+## Features
 
-The app is currently a themed shell with a placeholder home page. This is what the demo is
-meant to show:
+| Route | What it shows |
+|---|---|
+| `/:lang/home` | The pitch, a query field that hands off to search, and links to both pages. |
+| `/:lang/search?q=…&k=…` | Ranked supervisors from `/v1/match` and, next to them, the written recommendation from `/v1/recommend`. |
+| `/:lang/index` | Index status, the latest 20 indexing runs, and buttons that re-index publications or thesis postings. |
 
-- **Query box** for free text, with a `top_k` control.
-- **Ranked researchers** from `/v1/match`, with the evidence behind each suggestion:
-  publications, open thesis postings and scores.
-- **Prose recommendation** from `/v1/recommend`, shown next to the structured result, so the
-  difference between the two tools is visible.
-- **Index panel** showing the current status, recent runs, and buttons that start a
-  publication or posting index run.
-- **Clear error states** for the backend's coded errors (`index_not_built`, matcher
-  unreachable) instead of a blank page.
+`:lang` is `en` or `de`. On the search page the URL is the only state: `q` is the query and `k`
+is the number of results (1–50, default 5). Submitting navigates, so reloading or sharing a link
+runs the same search again.
+
+- **Search.** One submit sends `/v1/match` and `/v1/recommend` in parallel, and a new query
+  cancels both.
+  - Each supervisor card shows the cosine score, the best score per source, a flag for authors
+    without a UZH affiliation, and the publications and postings the match rests on, with links.
+  - The recommendation is plain text: either LLM prose, or the template list when the matcher
+    has no LLM. Its URLs become links, and nothing is rendered as HTML.
+- **Index.** Each trigger asks for confirmation first, because the matcher has no auth on these
+  routes.
+  - **A triggered run reads from `MATCHER_SOURCES_PATH`**, which defaults to the checked-in
+    samples (`data/samples`), not Postgres. It also deletes indexed documents of its kind that are
+    missing from that source. So against an index built with `themis-matcher index --source db`,
+    set `MATCHER_SOURCES_PATH=db` before serving, or one click shrinks the index to the samples.
+    The confirm dialog and the run history (column "Read from") show the source.
+  - A started run is polled until it finishes. While it runs, the page shows elapsed time and
+    heartbeat age, since the matcher writes the counters only at the end.
+  - A run that is already going, whether from the CLI or another tab, is picked up and locks
+    the buttons.
+- **Errors.** Every failed call is explained in place, with a next step:
+  - matcher unreachable: shows the serve command
+  - no index yet: links to the index page
+  - run in progress
+  - database down
+  - When match and recommend fail the same way, the error is shown once.
+  - A server error (500) reaches the browser without CORS headers, so it looks like
+    "unreachable". Check the matcher's log.
+- **Health.** The dot in the toolbar polls `/v1/health` every 30 s.
 
 ## Related
 

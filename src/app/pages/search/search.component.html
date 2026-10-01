@@ -1,0 +1,98 @@
+<main class="container py-5" *transloco="let t; prefix: 'pages.search'">
+  <p class="themis-eyebrow mb-2">{{ t('eyebrow') }}</p>
+  <h1 class="search__title">{{ t('title') }}</h1>
+
+  <form class="search__form mt-4" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline" class="search__query">
+      <mat-label>{{ t('query-label') }}</mat-label>
+      <textarea
+        matInput
+        formControlName="query"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="2"
+        cdkAutosizeMaxRows="8"
+        [placeholder]="t('query-placeholder')"
+        (keydown.control.enter)="submit()"
+        (keydown.meta.enter)="submit()"></textarea>
+      <mat-hint>{{ t('query-hint') }}</mat-hint>
+    </mat-form-field>
+
+    <div class="search__controls">
+      <mat-form-field appearance="outline" class="search__top-k" subscriptSizing="dynamic">
+        <mat-label>{{ t('top-k') }}</mat-label>
+        <mat-select formControlName="topK">
+          @for (option of topKOptions$$(); track option) {
+            <mat-option [value]="option">{{ option }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" class="search__submit" [disabled]="form.invalid">
+        <fa-icon icon="magnifying-glass"></fa-icon>
+        {{ t('submit') }}
+      </button>
+    </div>
+  </form>
+
+  <div class="search__examples">
+    <span class="search__examples-label">{{ t('examples-label') }}</span>
+    @for (example of examples; track example) {
+      <button mat-stroked-button type="button" class="search__example less-rounded" (click)="runExample(t('examples.' + example))">
+        {{ t('examples.' + example) }}
+      </button>
+    }
+  </div>
+
+  @if (!request$$()) {
+    <div class="empty-info-box mt-5">
+      <fa-icon icon="magnifying-glass" class="empty-info-box__icon"></fa-icon>
+      <h2 class="empty-info-box__title">{{ t('idle.title') }}</h2>
+      <p class="empty-info-box__body">{{ t('idle.body') }}</p>
+    </div>
+  } @else if (sharedError$$(); as error) {
+    <themis-matcher-error class="mt-5" [error]="error"></themis-matcher-error>
+  } @else {
+    <div class="row gy-5 gx-lg-5 mt-2">
+      <section class="col-lg-7" aria-labelledby="search-matches-title">
+        <h2 id="search-matches-title" class="search__section-title">
+          {{ t('matches.title') }}
+          @if (matches.hasValue()) {
+            <span class="search__count">{{ matches.value().matches.length }}</span>
+          }
+        </h2>
+
+        @if (matches.isLoading()) {
+          <div class="search__loading">
+            <mat-spinner diameter="28"></mat-spinner>
+            <div>
+              <p class="m-0">{{ t('matches.loading') }}</p>
+              <p class="search__hint">{{ t('matches.loading-hint') }}</p>
+            </div>
+          </div>
+        } @else if (matchError$$(); as error) {
+          <themis-matcher-error [error]="error"></themis-matcher-error>
+        } @else if (matches.hasValue()) {
+          <ol class="search__matches">
+            @for (match of matches.value().matches; track $index; let i = $index) {
+              <li><themis-match-card [match]="match" [rank]="i + 1"></themis-match-card></li>
+            } @empty {
+              <li class="empty-info-box">
+                <h3 class="empty-info-box__title">{{ t('matches.empty.title') }}</h3>
+                <p class="empty-info-box__body">{{ t('matches.empty.body') }}</p>
+              </li>
+            }
+          </ol>
+        }
+      </section>
+
+      <aside class="col-lg-5">
+        <div class="search__aside">
+          <themis-recommendation-panel
+            [answer]="recommendation.hasValue() ? recommendation.value().answer : undefined"
+            [loading]="recommendation.isLoading()"
+            [error]="recommendationError$$()"></themis-recommendation-panel>
+        </div>
+      </aside>
+    </div>
+  }
+</main>

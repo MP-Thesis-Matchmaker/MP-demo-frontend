@@ -1,10 +1,31 @@
 <header class="themis-toolbar" *transloco="let t; prefix: 'components.toolbar'">
-  <div class="container d-flex align-items-center gap-3">
+  <div class="container d-flex align-items-center gap-2 gap-sm-3">
     <a class="themis-toolbar__brand themis-wordmark" [routerLink]="['/', lang$$(), 'home']" [attr.aria-label]="t('home')">
       {{ t('brand') }}
     </a>
 
+    <nav class="themis-toolbar__nav" [attr.aria-label]="t('nav.label')">
+      <a mat-button class="themis-toolbar__link less-rounded" routerLinkActive="themis-toolbar__link--active"
+         [routerLink]="['/', lang$$(), 'search']" [attr.aria-label]="t('nav.search')">
+        <fa-icon icon="magnifying-glass"></fa-icon>
+        <span class="d-none d-md-inline">{{ t('nav.search') }}</span>
+      </a>
+      <a mat-button class="themis-toolbar__link less-rounded" routerLinkActive="themis-toolbar__link--active"
+         [routerLink]="['/', lang$$(), 'index']" [attr.aria-label]="t('nav.index')">
+        <fa-icon icon="database"></fa-icon>
+        <span class="d-none d-md-inline">{{ t('nav.index') }}</span>
+      </a>
+    </nav>
+
     <span class="flex-grow-1"></span>
+
+    <span
+      class="themis-toolbar__health"
+      [class]="'themis-toolbar__health--' + health$$()"
+      role="status"
+      tabindex="0"
+      [matTooltip]="t('health.' + health$$(), {origin: matcherOrigin})"
+      [attr.aria-label]="t('health.' + health$$(), {origin: matcherOrigin})"></span>
 
     <mat-button-toggle-group
       [value]="lang$$()"

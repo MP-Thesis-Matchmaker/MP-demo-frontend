@@ -1,0 +1,57 @@
+<article class="match-card" *transloco="let t; prefix: 'components.match-card'">
+  <header class="match-card__header">
+    <span class="match-card__rank" aria-hidden="true">{{ rank() < 10 ? '0' + rank() : rank() }}</span>
+
+    <div class="match-card__who">
+      <h3 class="match-card__name">{{ match().supervisor }}</h3>
+      @if (match().department; as department) {
+        <p class="match-card__department">{{ department }}</p>
+      }
+    </div>
+
+    <div class="match-card__score" [matTooltip]="t('score-hint')" tabindex="0" [attr.aria-label]="t('score-label')">
+      <span class="match-card__score-value">{{ match().score | translocoDecimal: scoreFormat }}</span>
+      <span class="match-card__score-bar" aria-hidden="true"><span [style.width.%]="scorePercent$$()"></span></span>
+    </div>
+  </header>
+
+  <div class="match-card__chips">
+    @for (source of sources$$(); track source.type) {
+      <span class="match-card__chip" [matTooltip]="t('source-score-hint')">
+        <fa-icon [icon]="sourceIcons[source.type]"></fa-icon>
+        {{ t('sources.' + source.type) }} · {{ source.score | translocoDecimal: scoreFormat }}
+      </span>
+    }
+    @if (!match().has_uzh_affiliation) {
+      <span class="match-card__chip match-card__chip--external" [matTooltip]="t('external-hint')">{{ t('external') }}</span>
+    }
+  </div>
+
+  <p class="match-card__counts">
+    {{ t('counts', {publications: match().publication_count, postings: match().posting_count}) }}
+  </p>
+
+  <ul class="match-card__evidence" [attr.aria-label]="t('evidence')">
+    @for (item of visibleEvidence$$(); track item.source_type + item.source_id) {
+      <li class="match-card__evidence-item">
+        <fa-icon [icon]="sourceIcons[item.source_type]" class="match-card__evidence-icon" [matTooltip]="t('sources.' + item.source_type)"></fa-icon>
+        <span class="match-card__evidence-title">
+          @if (item.url) {
+            <a [href]="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item.title) }}<fa-icon icon="arrow-up-right-from-square" class="match-card__external-icon"></fa-icon></a>
+          } @else {
+            {{ displayTitle(item.title) }}
+          }
+        </span>
+        @if (item.year) {
+          <span class="match-card__year">{{ item.year }}</span>
+        }
+      </li>
+    }
+  </ul>
+
+  @if (hiddenCount$$() > 0) {
+    <button mat-button type="button" class="match-card__more" (click)="showAll$$.set(true)">
+      {{ t('show-all', {count: match().evidence.length}) }}
+    </button>
+  }
+</article>

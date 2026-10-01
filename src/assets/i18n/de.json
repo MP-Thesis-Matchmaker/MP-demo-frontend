@@ -15,7 +15,74 @@
         "system": "Farbmodus: System (Klick für hell)",
         "light": "Farbmodus: hell (Klick für dunkel)",
         "dark": "Farbmodus: dunkel (Klick für System)"
+      },
+      "nav": {
+        "label": "Hauptnavigation",
+        "search": "Suche",
+        "index": "Index"
+      },
+      "health": {
+        "unknown": "Matcher unter {{origin}} wird geprüft …",
+        "online": "Matcher erreichbar ({{origin}})",
+        "offline": "Matcher nicht erreichbar ({{origin}})"
       }
+    },
+    "match-card": {
+      "score-label": "Ähnlichkeitswert",
+      "score-hint": "Kosinus-Ähnlichkeit zwischen deiner Anfrage und dem am besten passenden Eintrag dieser Person (−1 bis 1). Ein Rangsignal, keine Wahrscheinlichkeit.",
+      "source-score-hint": "Beste Ähnlichkeit je Quelle",
+      "sources": {
+        "publication": "Publikationen",
+        "thesis_posting": "Ausschreibungen"
+      },
+      "external": "Keine UZH-Zugehörigkeit",
+      "external-hint": "Erscheint in ZORA als Mitautor:in, ist aber nicht als UZH-zugehörig erfasst.",
+      "counts": "{publications, plural, =0 {Keine passenden Publikationen} one {# passende Publikation} other {# passende Publikationen}} · {postings, plural, =0 {keine Ausschreibungen} one {# Ausschreibung} other {# Ausschreibungen}}",
+      "evidence": "Einträge, auf denen dieser Vorschlag beruht",
+      "show-all": "Alle {{count}} Einträge anzeigen"
+    },
+    "recommendation-panel": {
+      "eyebrow": "/v1/recommend",
+      "title": "Empfehlung",
+      "idle": "Hier erscheint die ausformulierte Empfehlung.",
+      "loading": "Empfehlung wird geschrieben … {{seconds}} s",
+      "loading-hint": "Mit konfiguriertem LLM kann das bis zu einer Minute dauern.",
+      "note": "Aus demselben Retrieval zusammengefasst. Ohne LLM erstellt der Matcher diese Liste aus einer Vorlage."
+    },
+    "matcher-error": {
+      "details": "Technische Details",
+      "open-index": "Zum Index",
+      "unreachable": {
+        "title": "Matcher nicht erreichbar",
+        "body": "Der Matcher hat nicht geantwortet oder ist mit einem Serverfehler abgebrochen (dieser erreicht den Browser ohne CORS-Header). Prüfe, ob er mit CORS für diese Adresse läuft, und schau in sein Log:"
+      },
+      "index-not-built": {
+        "title": "Noch kein Index",
+        "body": "Der Matcher hat keinen Suchindex, es gibt also nichts zum Abgleichen. Erstelle zuerst einen."
+      },
+      "index-run-in-progress": {
+        "title": "Indexierung läuft",
+        "body": "Lauf #{{runId}} indexiert noch. Es kann immer nur ein Lauf den Index belegen."
+      },
+      "database-unavailable": {
+        "title": "Datenbank antwortet nicht",
+        "body": "Der Matcher läuft, aber seine Postgres-Datenbank hat nicht geantwortet. Versuche es gleich noch einmal."
+      },
+      "validation": {
+        "title": "Anfrage abgelehnt",
+        "body": "Der Matcher hat die Anfrage nicht akzeptiert. Die Anfrage darf nicht leer sein."
+      },
+      "not-found": {
+        "title": "Nicht gefunden",
+        "body": "Der Matcher kennt diesen Eintrag nicht."
+      },
+      "unknown": {
+        "title": "Etwas ist schiefgelaufen",
+        "body": "Der Matcher hat einen unerwarteten Fehler gemeldet."
+      }
+    },
+    "confirm-dialog": {
+      "cancel": "Abbrechen"
     }
   },
   "pages": {
@@ -38,17 +105,107 @@
         }
       },
       "disclaimer": "Orientierung, keine Empfehlung.",
-      "preview": {
-        "title": "Theme-Vorschau",
-        "subtitle": "Die Bedienelemente, aus denen die Matcher-Funktionen gebaut werden.",
-        "query-label": "Woran möchtest du arbeiten?",
-        "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
-        "match": "Forschende finden",
-        "recommend": "Empfehlung erhalten",
-        "index": "Index-Status",
-        "disabled": "Deaktiviert",
-        "toggle": "Offene Abschlussarbeiten einbeziehen",
-        "coming-soon": "Matching, Empfehlungen und das Index-Panel folgen mit den nächsten Features. Diese Karte zeigt nur das Theme."
+      "query-label": "Woran möchtest du arbeiten?",
+      "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
+      "cta-search": "Anfrage ausprobieren",
+      "cta-index": "Zum Index"
+    },
+    "search": {
+      "eyebrow": "Suche",
+      "title": "Beschreibe die Arbeit, die dir vorschwebt.",
+      "query-label": "Woran möchtest du arbeiten?",
+      "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
+      "query-hint": "Am besten in eigenen Worten. Strg/⌘ + Enter zum Suchen.",
+      "top-k": "Treffer",
+      "submit": "Suchen",
+      "examples-label": "Beispiele:",
+      "examples": {
+        "rag": "Retrieval-Augmented Generation für wissenschaftliche Texte",
+        "history": "Computergestützte Analyse historischer Dokumente",
+        "finance": "Klimarisiken auf Finanzmärkten"
+      },
+      "idle": {
+        "title": "Noch keine Suche",
+        "body": "Gib eine Anfrage ein oder wähle ein Beispiel. Du erhältst eine Rangliste von Betreuenden mit den passenden Einträgen und daneben eine ausformulierte Empfehlung."
+      },
+      "matches": {
+        "title": "Betreuende nach Rang",
+        "loading": "Abgleich läuft …",
+        "loading-hint": "Die erste Anfrage nach dem Start des Matchers lädt zusätzlich das Embedding-Modell und dauert daher länger.",
+        "empty": {
+          "title": "Keine Treffer",
+          "body": "Niemand im Index passt zu dieser Anfrage. Versuche, sie anders zu formulieren."
+        }
+      }
+    },
+    "index": {
+      "eyebrow": "Index",
+      "title": "Was der Matcher durchsucht.",
+      "lead": "THEMIS bettet ZORA-Publikationen und gesammelte Ausschreibungen für Abschlussarbeiten in einen gemeinsamen Vektorindex ein. Diese Seite zeigt, was darin steckt, den Verlauf der Indexierung, und lässt dich beide Quellen aktualisieren.",
+      "status": {
+        "title": "Aktueller Index",
+        "documents": "Dokumente",
+        "model": "Embedding-Modell",
+        "dim": "Dimensionen",
+        "max-seq": "Max. Sequenzlänge",
+        "truncated": "Gekürzte Dokumente",
+        "sources": "Quelle",
+        "empty": {
+          "title": "Noch kein Index",
+          "body": "Es wurde noch nichts indexiert. Starte rechts einen Lauf — der Matcher beantwortet Anfragen, sobald ein Index existiert."
+        }
+      },
+      "trigger": {
+        "title": "Neu indexieren",
+        "body": "Läuft im Hintergrund auf dem Matcher. Unveränderte Dokumente werden übersprungen; es kann immer nur ein Lauf den Index belegen.",
+        "publications": "Publikationen neu indexieren",
+        "postings": "Ausschreibungen neu indexieren"
+      },
+      "confirm": {
+        "start": "Lauf starten",
+        "publications": {
+          "title": "Publikationen neu indexieren?",
+          "body": "Der Matcher liest alle ZORA-Publikationen neu ein und bettet Geändertes ein. Je nach Korpus dauert das Minuten bis Stunden, und solange kann kein anderer Lauf starten."
+        },
+        "postings": {
+          "title": "Ausschreibungen neu indexieren?",
+          "body": "Der Matcher liest alle gesammelten Ausschreibungen neu ein und bettet Geändertes ein. Solange kann kein anderer Lauf starten."
+        },
+        "source-warning": "Der Lauf liest aus der konfigurierten Quelle des Matchers (MATCHER_SOURCES_PATH; standardmässig die eingecheckten Beispieldaten, nicht Postgres). Indexierte Dokumente dieser Art, die in dieser Quelle fehlen, werden gelöscht. Der aktuelle Index wurde zuletzt erstellt aus: {{source}}."
+      },
+      "watched": {
+        "running": "Lauf #{{id}} läuft",
+        "succeeded": "Lauf #{{id}} abgeschlossen",
+        "failed": "Lauf #{{id}} fehlgeschlagen",
+        "heartbeat": "Letztes Lebenszeichen vor {{seconds}} s. Zahlen erscheinen, sobald der Lauf fertig ist.",
+        "counts": "{embedded, plural, one {# Dokument} other {# Dokumente}} eingebettet, {skipped} unverändert, {deleted} entfernt."
+      },
+      "kinds": {
+        "publication": "Publikationen",
+        "thesis_posting": "Ausschreibungen",
+        "all": "Alle Quellen"
+      },
+      "states": {
+        "running": "Läuft",
+        "succeeded": "Erfolgreich",
+        "failed": "Fehlgeschlagen"
+      },
+      "runs": {
+        "title": "Verlauf",
+        "refresh": "Aktualisieren",
+        "empty": "Noch keine Läufe erfasst. Indexe, die vor der Laufverfolgung über die Kommandozeile erstellt wurden, erscheinen hier nicht.",
+        "kind": "Korpus",
+        "source": "Gelesen aus",
+        "state": "Status",
+        "error": "Fehler",
+        "started": "Gestartet",
+        "duration": "Dauer",
+        "embedded": "Eingebettet",
+        "skipped": "Übersprungen",
+        "deleted": "Gelöscht",
+        "truncated": "Gekürzt",
+        "invalid": "Ungültig",
+        "footnote": "Die letzten 20 Läufe. Zahlen werden erfasst, wenn ein Lauf endet."
       }
     }
   }

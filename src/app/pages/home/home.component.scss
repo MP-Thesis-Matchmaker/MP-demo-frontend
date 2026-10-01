@@ -60,6 +60,6 @@
   color: var(--themis-accent);
 }
 
-.home__preview {
-  --mat-card-outlined-container-color: var(--mat-sys-surface-container-low);
+.home__query {
+  max-width: 34rem;
 }
