@@ -24,7 +24,8 @@
 }
 
 .index__section-title {
-  margin: 0 0 1rem;
+  // html-tags.styles.scss zeroes heading margins with !important.
+  margin: 0 0 1rem !important;
   font-family: var(--themis-font-family-heading);
   font-size: 1rem !important;
   text-transform: uppercase;
@@ -41,6 +42,10 @@
   grid-template-columns: max-content 1fr;
   gap: .5rem 1.5rem;
   margin: 0;
+
+  code {
+    color: inherit;
+  }
 
   dt {
     font-weight: 400;
@@ -107,6 +112,11 @@
 .index__table {
   --mat-table-background-color: transparent;
   min-width: 52rem;
+}
+
+.index__source {
+  color: inherit;
+  font-size: .8rem;
 }
 
 .index__num {

@@ -55,7 +55,7 @@ export class IndexComponent {
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly columns = ['id', 'kind', 'state', 'started', 'duration', 'embedded', 'skipped', 'deleted', 'truncated', 'invalid'];
+  protected readonly columns = ['id', 'kind', 'source', 'state', 'started', 'duration', 'embedded', 'skipped', 'deleted', 'truncated', 'invalid'];
   protected readonly dateFormat: DateFormatOptions = {dateStyle: 'medium', timeStyle: 'short'};
 
   protected readonly status = rxResource({stream: () => this.api.indexStatus()});
@@ -77,6 +77,7 @@ export class IndexComponent {
   /** Ticks once a second while something runs, so elapsed and heartbeat ages stay current. */
   private readonly now$$ = signal(Date.now());
   private watching?: Subscription;
+  private watchingId?: number;
 
   constructor() {
     effect(onCleanup => {
@@ -100,7 +101,9 @@ export class IndexComponent {
     const data: ConfirmDialogData = {
       titleKey: `pages.index.confirm.${trigger}.title`,
       bodyKey: `pages.index.confirm.${trigger}.body`,
-      confirmKey: 'pages.index.confirm.start'
+      confirmKey: 'pages.index.confirm.start',
+      warningKey: 'pages.index.confirm.source-warning',
+      params: {source: (this.status.hasValue() ? this.status.value().sources : null) ?? '—'}
     };
     this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {data, maxWidth: '32rem'})
       .afterClosed()
@@ -113,6 +116,7 @@ export class IndexComponent {
         next: accepted => {
           this.triggerError$$.set(undefined);
           this.watch(accepted.run_id);
+          this.runs.reload(); // so the new run shows in the history right away
         },
         error: (err: unknown) => {
           const error = toMatcherError(err);
@@ -140,7 +144,11 @@ export class IndexComponent {
   }
 
   private watch(id: number): void {
+    if (this.watchingId === id && this.watching && !this.watching.closed) {
+      return; // already polling this run
+    }
     this.watching?.unsubscribe();
+    this.watchingId = id;
     this.watching = this.api.pollRun(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

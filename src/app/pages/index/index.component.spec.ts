@@ -109,6 +109,8 @@ describe('IndexComponent', () => {
       .flush({run_id: 9, kind: 'publication'}, {status: 202, statusText: 'Accepted'});
     await settle();
 
+    // The history reloads at once so the new run shows up.
+    http.expectOne(`${base}/index/runs?limit=20`).flush([run(9, 'running')]);
     http.expectOne(`${base}/index/runs/9`).flush(run(9, 'running'));
     await settle();
     expect(triggers().every(b => b.disabled)).toBe(true);

@@ -8,6 +8,8 @@ export interface ConfirmDialogData {
   titleKey: string;
   bodyKey: string;
   confirmKey: string;
+  /** Optional caveat, shown as a warning banner under the body. */
+  warningKey?: string;
   params?: Record<string, unknown>;
 }
 

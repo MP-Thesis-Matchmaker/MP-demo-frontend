@@ -119,6 +119,10 @@
               <th mat-header-cell *matHeaderCellDef>{{ t('runs.kind') }}</th>
               <td mat-cell *matCellDef="let run">{{ t('kinds.' + run.kind) }}</td>
             </ng-container>
+            <ng-container matColumnDef="source">
+              <th mat-header-cell *matHeaderCellDef>{{ t('runs.source') }}</th>
+              <td mat-cell *matCellDef="let run"><code class="index__source">{{ run.source }}</code></td>
+            </ng-container>
             <ng-container matColumnDef="state">
               <th mat-header-cell *matHeaderCellDef>{{ t('runs.state') }}</th>
               <td mat-cell *matCellDef="let run">

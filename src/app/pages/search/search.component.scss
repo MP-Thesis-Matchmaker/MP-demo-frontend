@@ -11,7 +11,8 @@
 .search__form {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 1rem;
+  // The row gap clears the outline label that floats above the wrapped controls.
+  gap: .75rem 1rem;
   align-items: flex-start;
 }
 
@@ -22,7 +23,8 @@
 .search__controls {
   display: flex;
   gap: 1rem;
-  align-items: flex-start;
+  // The select has no subscript, so stretching makes the button exactly as tall as the field.
+  align-items: stretch;
 }
 
 .search__top-k {
@@ -30,8 +32,7 @@
 }
 
 .search__submit {
-  // Line up with the 56px outline form fields beside it.
-  height: 56px !important;
+  height: auto !important;
   padding-inline: 1.5rem !important;
   gap: .5rem;
 }
@@ -58,7 +59,8 @@
   display: flex;
   align-items: baseline;
   gap: .5rem;
-  margin: 0 0 1rem;
+  // html-tags.styles.scss zeroes heading margins with !important.
+  margin: 0 0 1rem !important;
   font-family: var(--themis-font-family-heading);
   font-size: 1rem !important;
   text-transform: uppercase;
@@ -90,10 +92,17 @@
   gap: 1rem;
 }
 
-.search__aside {
-  position: sticky;
-  // Below the 64px sticky toolbar.
-  top: calc(64px + 1.5rem);
+// Side by side only from lg up: keep the recommendation in view while scrolling the ranked list. A long
+// answer scrolls inside the panel, since a sticky box taller than the viewport would hide its own end.
+@media (min-width: 992px) {
+  .search__aside {
+    position: sticky;
+    // Below the 64px sticky toolbar.
+    top: calc(64px + 1.5rem);
+    max-height: calc(100vh - 64px - 3rem);
+    overflow-y: auto;
+    border-radius: .75rem;
+  }
 }
 
 @media (max-width: 575.98px) {

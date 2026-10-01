@@ -10,7 +10,7 @@
   background: var(--mat-sys-surface-container);
 
   &__title {
-    margin: 0 0 1rem;
+    margin: 0 0 1rem !important;
     font-family: var(--themis-font-family-heading);
     font-size: 1.35rem !important;
     font-weight: 400 !important;

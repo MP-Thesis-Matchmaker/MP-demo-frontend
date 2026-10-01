@@ -18,7 +18,7 @@
     </mat-form-field>
 
     <div class="search__controls">
-      <mat-form-field appearance="outline" class="search__top-k">
+      <mat-form-field appearance="outline" class="search__top-k" subscriptSizing="dynamic">
         <mat-label>{{ t('top-k') }}</mat-label>
         <mat-select formControlName="topK">
           @for (option of topKOptions$$(); track option) {
