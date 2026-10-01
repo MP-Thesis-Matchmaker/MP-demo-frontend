@@ -141,7 +141,8 @@
         "empty": {
           "title": "No matches",
           "body": "Nobody in the index matched this query. Try describing it differently."
-        }
+        },
+        "overlap": "{records, plural, one {# indexed record overlaps} other {# indexed records overlap}} your query · {supervisors, plural, one {# supervisor} other {# supervisors}} ranked"
       }
     },
     "index": {

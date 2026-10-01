@@ -86,6 +86,10 @@ const DIE = 400;
 /** Gap between the dots of one shortlist row (the video's 22px at 1920 wide). */
 export const ROW_PITCH = 12;
 
+function inside(rect: Rect, x: number, y: number): boolean {
+  return x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height;
+}
+
 export class DotFieldEngine {
 
   private width = 0;
@@ -97,6 +101,8 @@ export class DotFieldEngine {
 
   private accents: AccentDot[] = [];
   private scanRegion?: Rect;
+  /** While a search runs, drift shows only inside its region, so it never sits over the form. */
+  private clip?: Rect;
   private scanStart = 0;
   private origin?: Point;
   private absorbStart?: number;
@@ -138,6 +144,7 @@ export class DotFieldEngine {
   /** Starts (or restarts) the flicker of found records inside `region`. */
   public scan(now: number, region: Rect): void {
     this.scanRegion = region;
+    this.clip = region;
     this.scanStart = now;
     this.origin = undefined;
     this.absorbStart = undefined;
@@ -205,6 +212,9 @@ export class DotFieldEngine {
       this.absorbStart = undefined;
       this.origin = undefined;
     }
+    if (this.clip && !this.scanRegion && this.accents.length === 0 && this.level(now) === 0) {
+      this.clip = undefined;
+    }
     this.accents = this.accents.filter(dot =>
       dot.travel || (dot.dyingFrom === undefined ? now < dot.born + dot.life : now < dot.dyingFrom + DIE));
 
@@ -226,12 +236,12 @@ export class DotFieldEngine {
     if (level > 0) {
       for (let i = 0; i < count; i++) {
         const dot = this.drift[i];
-        drift.push({
-          x: dot.u * this.width + Math.sin(t * .35 + dot.phase) * 10,
-          y: dot.v * this.height + Math.cos(t * .28 + dot.phase) * 8,
-          size: dot.size,
-          alpha: level * progress(now, this.introStart + dot.delay, this.introDuration, easeOutCubic)
-        });
+        const x = dot.u * this.width + Math.sin(t * .35 + dot.phase) * 10;
+        const y = dot.v * this.height + Math.cos(t * .28 + dot.phase) * 8;
+        if (this.clip && !inside(this.clip, x, y)) {
+          continue;
+        }
+        drift.push({x, y, size: dot.size, alpha: level * progress(now, this.introStart + dot.delay, this.introDuration, easeOutCubic)});
       }
     }
 

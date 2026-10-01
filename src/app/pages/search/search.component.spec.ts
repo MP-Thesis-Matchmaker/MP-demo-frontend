@@ -1,13 +1,15 @@
 import {provideHttpClient} from '@angular/common/http';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
+import {signal} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideRouter} from '@angular/router';
 import {provideTranslocoMessageformat} from '@jsverse/transloco-messageformat';
 import {environment} from '../../../environments/environment';
 import {MatchResponse} from '../../models/matcher.model';
 import {provideFontawesome} from '../../services/fontawesome.service';
+import {MotionService} from '../../services/motion.service';
 import {themisTranslocoTesting, translocoLocaleTesting} from '../../../testing/transloco-testing';
-import {SearchComponent} from './search.component';
+import {MIN_SCAN_MS, SearchComponent} from './search.component';
 
 const base = `${environment.matcherOrigin}/v1`;
 
@@ -37,7 +39,7 @@ describe('SearchComponent', () => {
     TestBed.tick();
   }
 
-  beforeEach(async () => {
+  async function create(providers: unknown[] = []): Promise<void> {
     await TestBed.configureTestingModule({
       imports: [SearchComponent, themisTranslocoTesting()],
       providers: [
@@ -46,13 +48,19 @@ describe('SearchComponent', () => {
         provideHttpClientTesting(),
         provideFontawesome(),
         translocoLocaleTesting(),
-        provideTranslocoMessageformat()
+        provideTranslocoMessageformat(),
+        ...providers as never[]
       ]
     }).compileComponents();
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(SearchComponent);
     el = fixture.nativeElement as HTMLElement;
-  });
+  }
+
+  /** Reduced motion: no scan hold and no flight, so a flushed answer is revealed straight away. */
+  const STILL = {provide: MotionService, useValue: {reduced$$: signal(true), takeIntro: () => 'none'}};
+
+  beforeEach(() => create());
 
   afterEach(() => http.verify());
 
@@ -103,5 +111,61 @@ describe('SearchComponent', () => {
     const errors = el.querySelectorAll('themis-matcher-error');
     expect(errors).toHaveLength(1);
     expect(errors[0].querySelector('a[href$="/index"]')).not.toBeNull();
+  });
+
+  it('starts enlarged and narrows for good on the first query', async () => {
+    await settle();
+    const main = () => el.querySelector('main')!.classList;
+    expect(main()).toContain('search--fresh');
+
+    fixture.componentRef.setInput('q', 'x');
+    await settle();
+    expect(main()).not.toContain('search--fresh');
+    http.expectOne(`${base}/match`);
+    http.expectOne(`${base}/recommend`);
+
+    fixture.componentRef.setInput('q', undefined);
+    await settle();
+    expect(main()).not.toContain('search--fresh');
+  });
+
+  it('starts compact on a deep link', async () => {
+    fixture.componentRef.setInput('q', 'x');
+    await settle();
+    expect(el.querySelector('main')!.classList).not.toContain('search--fresh');
+    http.expectOne(`${base}/match`);
+    http.expectOne(`${base}/recommend`);
+  });
+
+  it('keeps the shortlist hidden while the dots scan and gather, then reveals it', async () => {
+    fixture.componentRef.setInput('q', 'x');
+    await settle();
+    http.expectOne(`${base}/match`).flush(RESPONSE);
+    http.expectOne(`${base}/recommend`);
+    await settle();
+
+    expect(el.querySelectorAll('themis-match-card')).toHaveLength(1);
+    expect(el.querySelector('.search__matches--pending')).not.toBeNull();
+
+    // MIN_SCAN_MS of flicker, then the flight (under a second) and the absorb.
+    await new Promise(resolve => setTimeout(resolve, MIN_SCAN_MS + 1100));
+    await settle();
+    expect(el.querySelector('.search__matches--pending')).toBeNull();
+  }, 10_000);
+
+  it('reveals at once under reduced motion and sums the overlap into the hint', async () => {
+    TestBed.resetTestingModule();
+    await create([STILL]);
+    fixture.componentRef.setInput('q', 'x');
+    await settle();
+    // No dots to watch, so the spinner is back as the loading indicator.
+    expect(el.querySelector('.search__loading mat-spinner')).not.toBeNull();
+    http.expectOne(`${base}/match`).flush({matches: [RESPONSE.matches[0], {...RESPONSE.matches[0], supervisor: 'B', posting_count: 2}]});
+    http.expectOne(`${base}/recommend`);
+    await settle();
+    await settle();
+
+    expect(el.querySelector('.search__matches--pending')).toBeNull();
+    expect(el.querySelector('.search__overlap')!.textContent).toContain('4 indexed records overlap your query · 2 supervisors ranked');
   });
 });

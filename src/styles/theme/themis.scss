@@ -60,6 +60,18 @@
   }
 }
 
+// The search box narrowing on the first query (SearchComponent): the router's view transition morphs the
+// pieces named in search.component.scss. Global, because view-transition pseudo-elements hang off <html>,
+// out of reach of encapsulated component styles.
+::view-transition-group(search-eyebrow),
+::view-transition-group(search-title),
+::view-transition-group(search-query),
+::view-transition-group(search-controls),
+::view-transition-group(search-examples) {
+  animation-duration: .7s;
+  animation-timing-function: var(--themis-ease-settle);
+}
+
 /* The banner's typographic pieces, reusable anywhere. */
 
 .themis-wordmark {

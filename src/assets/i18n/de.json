@@ -141,7 +141,8 @@
         "empty": {
           "title": "Keine Treffer",
           "body": "Niemand im Index passt zu dieser Anfrage. Versuche, sie anders zu formulieren."
-        }
+        },
+        "overlap": "{records, plural, one {# indexierter Eintrag passt} other {# indexierte Einträge passen}} zu deiner Anfrage · {supervisors, plural, one {# Betreuungsperson} other {# Betreuende}} nach Rang"
       }
     },
     "index": {
