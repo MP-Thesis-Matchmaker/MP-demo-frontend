@@ -1,0 +1,15 @@
+# pnpm settings file (pnpm 11 moved these out of package.json's "pnpm" field).
+# NOT a workspace declaration — there is deliberately no `packages:` key: this
+# repository is a single Angular application.
+#
+# pnpm blocks dependency install scripts by default. These four are Angular
+# toolchain natives that must be allowed to build:
+#   esbuild          - the @angular/build bundler binary
+#   lmdb             - backs Angular's persistent disk cache
+#   msgpackr-extract - lmdb's serializer companion
+#   @parcel/watcher  - dev-server file watching
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true

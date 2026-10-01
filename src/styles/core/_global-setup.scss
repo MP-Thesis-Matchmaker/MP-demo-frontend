@@ -1,0 +1,61 @@
+@use '@angular/material' as mat;
+@use 'vars' as vars;
+// The icon utility classes (fa-lg, fa-sm, fa-fw, fa-spin, ...). Icons render as inline SVG through
+// <fa-icon>, so the SVG core's own small stylesheet is all that is needed.
+@use '@fortawesome/fontawesome-svg-core/styles.css';
+
+// DO NOT USE OR IMPORT THIS FILE IN ANY OTHER FILE
+
+/* -------------------------------------------------------------------------- */
+/*                         Angular Material theme                             */
+/* -------------------------------------------------------------------------- */
+// `theme-type: color-scheme` emits every --mat-sys-* colour token as `light-dark(<light>, <dark>)`, so
+// one theme serves both modes and the active one is picked by the CSS `color-scheme` property alone.
+// `color-scheme: light dark` here follows the operating system; ThemeService overrides it on <html>
+// when the user picks a mode explicitly.
+//
+// Unlike hui-client, no `use-system-variables` / `system-variables-prefix` — Material's own --mat-sys-*
+// names are used throughout, which is what component tokens read (see hui's styles/README.md §4).
+html {
+  color-scheme: light dark;
+
+  @include mat.theme((
+    color: (
+      theme-type: color-scheme,
+      primary: vars.$primary-palette,
+      tertiary: vars.$tertiary-palette,
+    ),
+    typography: (
+      plain-family: vars.$font-family-body,
+      brand-family: vars.$font-family-heading,
+    ),
+    density: 0,
+  ));
+
+  // Dark surfaces pulled toward the banner's black. Light values are Material's defaults
+  // (neutral 98 / 87), restated because light-dark() needs both halves.
+  @include mat.theme-overrides((
+    background: light-dark(#{vars.neutral(98)}, #{vars.$dark-surface}),
+    surface: light-dark(#{vars.neutral(98)}, #{vars.$dark-surface}),
+    surface-dim: light-dark(#{vars.neutral(87)}, #{vars.$dark-surface-dim}),
+    surface-container-lowest: light-dark(#ffffff, #{vars.$dark-surface-dim}),
+  ));
+
+  @include mat.form-field-density(-1);
+  @include mat.expansion-density(-5);
+}
+
+body {
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+/* FontAwesome icons take the surrounding text colour unless a class says otherwise. */
+:root {
+  fa-icon {
+    color: inherit;
+
+    &.fa-themis-primary { color: var(--mat-sys-primary); }
+    &.fa-themis-muted { color: var(--mat-sys-on-surface-variant); }
+  }
+}

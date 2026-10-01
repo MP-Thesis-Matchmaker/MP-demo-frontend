@@ -1,0 +1,154 @@
+// Bootstrap, compiled from source so its Sass variables follow the THEMIS palette, plus app-wide classes.
+// Bootstrap supplies the grid, reboot and utilities; there is no Bootstrap JS (Material covers overlays).
+@use 'vars' as vars;
+
+$primary: vars.primary(40);
+$link-color: vars.primary(40);
+$link-color-dark: vars.primary(80);
+$body-bg: vars.neutral(98);
+$body-bg-dark: vars.$dark-surface;
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer * .75,
+  4: $spacer,
+  5: $spacer * 1.5,
+  6: $spacer * 2,
+  7: $spacer * 3,
+  8: $spacer * 4.5,
+);
+@import 'bootstrap/scss/bootstrap';
+
+// Bootstrap and Material each switch modes on their own (data-bs-theme / color-scheme, both set by
+// ThemeService). The colours they share are pinned to the Material tokens so the two can never drift.
+:root,
+[data-bs-theme] {
+  --bs-body-bg: var(--mat-sys-surface);
+  --bs-body-color: var(--mat-sys-on-surface);
+  --bs-emphasis-color: var(--mat-sys-on-surface);
+  --bs-secondary-color: var(--mat-sys-on-surface-variant);
+  --bs-border-color: var(--mat-sys-outline-variant);
+  --bs-body-font-family: #{vars.$font-family-body};
+}
+
+/* -------------------------------------------------------------------------- */
+/*           Don't show increment/decrement arrows on number inputs           */
+/* -------------------------------------------------------------------------- */
+
+/* Chrome, Safari, Edge, Opera */
+input[matinput]::-webkit-outer-spin-button,
+input[matinput]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[matinput][type=number] {
+  -moz-appearance: textfield;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                         Custom classes and styles                          */
+/* -------------------------------------------------------------------------- */
+
+.fading-bottom-ruler {
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-width: 1px;
+    border-style: solid;
+    border-image: linear-gradient(
+        to right,
+        transparent 0%,
+        color-mix(in srgb, var(--mat-sys-outline) 60%, transparent) 25%,
+        color-mix(in srgb, var(--mat-sys-outline) 60%, transparent) 75%,
+        transparent 100%
+    ) 0 0 100% 0 stretch;
+  }
+
+  &.right-fade-only:after {
+    border-image: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--mat-sys-outline) 60%, transparent) 0%,
+        color-mix(in srgb, var(--mat-sys-outline) 60%, transparent) 75%,
+        transparent 100%
+    ) 0 0 100% 0 stretch;
+  }
+}
+
+.w-100px {
+  width: 100px !important;
+}
+
+// This is the same as the height of the mat-form-field's subscript which display mat-errors and mat-hints. Useful, when something needs to be aligned next to a mat-form-field
+.mb-mat {
+  margin-bottom: 1.25em!important;
+}
+@media screen and (min-width: vars.$sm-breakpoint) { .mb-sm-mat {margin-bottom: 1.25em!important;} }
+@media screen and (min-width: vars.$md-breakpoint) { .mb-md-mat {margin-bottom: 1.25em!important;} }
+@media screen and (min-width: vars.$lg-breakpoint) { .mb-lg-mat {margin-bottom: 1.25em!important;} }
+@media screen and (min-width: vars.$xl-breakpoint) { .mb-xl-mat {margin-bottom: 1.25em!important;} }
+@media screen and (min-width: vars.$xxl-breakpoint) { .mb-xxl-mat {margin-bottom: 1.25em!important;} }
+
+%banner {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid;
+  border-radius: .375rem;
+  font-size: 1rem;
+}
+
+.info-banner {
+  @extend %banner;
+  border-color: var(--mat-sys-outline-variant);
+  color: var(--mat-sys-on-secondary-container);
+  background: var(--mat-sys-secondary-container);
+}
+
+.error-banner {
+  @extend %banner;
+  border-color: var(--mat-sys-error);
+  color: var(--mat-sys-on-error-container);
+  background: var(--mat-sys-error-container);
+}
+
+.warning-banner {
+  @extend %banner;
+  border-color: light-dark(#{vars.warning(70)}, #{vars.warning(40)});
+  color: light-dark(#{vars.warning(20)}, #{vars.warning(90)});
+  background: light-dark(#{vars.warning(95)}, #{vars.warning(10)});
+}
+
+.empty-info-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 48px 16px;
+  color: var(--mat-sys-on-surface-variant);
+
+  &__icon {
+    font-size: 4rem;
+    color: var(--mat-sys-outline);
+  }
+
+  &__title {
+    margin: 8px 0 0;
+    font-family: vars.$font-family-heading;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__body {
+    margin: 0;
+    max-width: 340px;
+    font-size: .9rem;
+  }
+}

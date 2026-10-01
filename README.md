@@ -1,5 +1,6 @@
 ![Angular](https://img.shields.io/badge/angular-22.2-dd0031)
 ![Node](https://img.shields.io/badge/node-24-339933)
+![pnpm](https://img.shields.io/badge/pnpm-12-f69220)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-in%20development-orange)
 
@@ -29,13 +30,13 @@ production depends on it.
 ## Architecture
 
 ```
-Browser ──▶ ng serve  :4200
-              │  /api/*  (dev-server proxy, prefix stripped)
-              ▼
-            themis-matcher serve  :8100      ← backend-core, FastAPI
-              │
-              ▼
-            Postgres + pgvector  :5432       ← docker compose up -d postgres
+Browser (ng serve :4200)
+   │  fetch(environment.matcherOrigin + '/v1/...')      cross-origin, CORS
+   ▼
+themis-matcher serve  :8100      ← backend-core, FastAPI, MATCHER_CORS_ORIGINS=http://localhost:4200
+   │
+   ▼
+Postgres + pgvector  :5432       ← docker compose up -d postgres
 ```
 
 **The frontend talks to the matcher's HTTP API, not to the MCP gateway.** The matcher API is
@@ -45,17 +46,20 @@ browser would also need session handling for only two tools. The gateway's
 `/v1/match` and `/v1/recommend` endpoints anyway, so the demo shows the same retrieval that
 askUZH gets.
 
-**The proxy is required, not a convenience.** The matcher has no CORS middleware, so a browser
-on `:4200` calling `:8100` directly is blocked. [`proxy.conf.json`](proxy.conf.json) forwards
-`/api/*` to `http://127.0.0.1:8100/*`, which means frontend code calls `/api/v1/match` and the
-browser only ever sees one origin. If you run the matcher on another port
-(`MATCHER_API_PORT`), change `target` there.
+**The backend URL comes from build-time environment files.** There is no proxy; the setup
+follows hui-client.
+[`src/environments/environment.ts`](src/environments/environment.ts) (local, `http://localhost:8100`)
+is swapped for `environment.prod.ts` in the `prod` build configuration via `fileReplacements`.
+Services build absolute URLs: `environment.matcherOrigin + '/v1/match'`.
+
+**The matcher has to allow this origin.** Its CORS is opt-in and off by default, because in the
+cluster only the gateway calls it, server to server. To use the demo locally, start the matcher
+with `MATCHER_CORS_ORIGINS=http://localhost:4200`. Without that, the browser blocks every call.
 
 ## Backend endpoints
 
 All of these are defined in
-`backend-core/projects/matcher/src/themis_matcher/api/app.py`. From the frontend, call them
-with an `/api` prefix.
+`backend-core/projects/matcher/src/themis_matcher/api/app.py`.
 
 | Method | Path | What it gives the demo |
 |---|---|---|
@@ -70,8 +74,8 @@ with an `/api` prefix.
 
 ## Quickstart
 
-Needs Node **24** (see [`.nvmrc`](.nvmrc)). Angular 22.2 requires
-`^22.22.3 || ^24.15.0`, and the CLI refuses to start on anything older.
+Needs Node **24** (see [`.nvmrc`](.nvmrc); Angular 22.2 refuses anything older than
+`22.22.3`) and **pnpm** through corepack.
 
 **1. Backend**, from a `backend-core` checkout. Its README has the full story:
 
@@ -80,7 +84,7 @@ uv sync --all-packages
 docker compose up -d postgres         # Postgres + pgvector on localhost:5432
 uv run themis-init-db                 # creates the schema
 uv run themis-matcher index           # indexes the 50 checked-in samples
-uv run themis-matcher serve           # HTTP API on 127.0.0.1:8100
+MATCHER_CORS_ORIGINS=http://localhost:4200 uv run themis-matcher serve   # HTTP API on :8100
 ```
 
 Everything above runs offline by default, with hash embeddings, the rule-based parser and
@@ -91,29 +95,81 @@ the backend's `.env`; this repo has nothing to configure for that.
 
 ```
 nvm use                               # picks up .nvmrc → Node 24
-npm ci
-npm start                             # ng serve on http://localhost:4200
+corepack enable pnpm                  # once; provides the pnpm version pinned in package.json
+pnpm install
+pnpm start                            # ng serve on http://localhost:4200 → redirects to /en/home
 ```
 
-To check the proxy is working: `curl localhost:4200/api/v1/health` should return
-`{"status":"ok"}`.
+Use pnpm only. `package-lock.json` is gitignored, and `pnpm-workspace.yaml` lists the native
+build scripts pnpm is allowed to run (esbuild, lmdb, …).
 
 ## Scripts
 
 | Command | What it does |
 |---|---|
-| `npm start` | Dev server on `:4200` with live reload and the `/api` proxy. |
-| `npm run build` | Production build into `dist/`. |
-| `npm run watch` | Development build in watch mode. |
-| `npm test` | Unit tests with Vitest (`@angular/build:unit-test`, jsdom). |
+| `pnpm start` | Dev server on `:4200` (`local` configuration, live reload). |
+| `pnpm build` | Production build into `dist/themis-demo` (`prod` configuration). |
+| `pnpm build:local` | Unoptimised build with source maps. |
+| `pnpm watch` | `build:local` in watch mode. |
+| `pnpm test` | Unit tests once, with Vitest (`@angular/build:unit-test`, jsdom). |
+| `pnpm lint` | ESLint (angular-eslint) over `src/**/*.{ts,html}`. |
 
-New code follows the CLI defaults for Angular 22: standalone components, zoneless change
-detection, SCSS. Generate with `npx ng generate component <name>`.
+## Layout
+
+The structure follows hui-client, collapsed to one application: what hui keeps in
+`projects/shared` lives directly under `src/`.
+
+```
+src/
+  index.html  main.ts  favicon.ico
+  app/
+    app.component.*  app.config.ts  app.routes.ts
+    transloco.config.ts  transloco-loader.ts
+    components/        reusable UI (toolbar: language switch, theme toggle)
+    pages/             routed screens, lazy-loaded (home)
+    services/          theme, Font Awesome registration, Transloco helpers
+    guards/            lang.guard (the /:lang URL segment)
+    constants/         languages and other app-wide constants
+  assets/i18n/         en.json, de.json
+  environments/        environment.ts (local), environment.prod.ts
+  styles/              global SCSS: Bootstrap + Material theme (see src/styles/README.md)
+  testing/             Vitest setup and Transloco testing helpers
+```
+
+## Conventions (from hui-client)
+
+- **Components:** standalone only, no NgModules, no barrel `index.ts`. Files use type suffixes
+  (`.component.ts`, `.service.ts`, `.guard.ts`). Selectors and directives use the `themis`
+  prefix.
+- **DI and state:** `inject()`, not constructor injection; constructors only hold `effect()`
+  calls. Signals end in `$$`, observables in `$`. State lives in signals. Routes use lazy
+  `loadComponent`.
+- **i18n:** Transloco, with kebab-case keys namespaced as `shared.*`, `components.*` and
+  `pages.*`. Every route sits under `/:lang` (`en` default, `de`), which `langGuard` validates.
+  Switching language rewrites that segment. Add a key to both `en.json` and `de.json`.
+- **Icons:** Font Awesome Free. Register every icon in `services/fontawesome.service.ts`, then
+  reference it by name (`<fa-icon icon="sun">`).
+- **Colours:** use theme tokens (`var(--mat-sys-*)`) and never hard-coded colours, so light and
+  dark mode both work. `src/styles/README.md` explains the mechanism.
+- **Assets:** runtime asset URLs are bare-relative (`assets/i18n/en.json`, not
+  `/assets/...`), so the app survives a non-root `<base href>`.
+
+## Theming
+
+The palette is generated from the lavender accent of the THEMIS banner
+(`backend-core/docs/branding/themis-banner.png`). The fonts follow the banner too: Oswald for
+headings, Inter for body text, Source Serif 4 italic for taglines, all self-hosted through
+`@fontsource`.
+
+Light, dark and "follow the system" are switched with the toolbar button. `ThemeService`
+remembers the choice in `localStorage` and sets both the CSS `color-scheme` (Material) and
+`data-bs-theme` (Bootstrap). The details are in
+[`src/styles/README.md`](src/styles/README.md).
 
 ## Planned features
 
-Nothing below exists yet. The app is still the CLI scaffold. This is what the demo is meant to
-show:
+The app is currently a themed shell with a placeholder home page. This is what the demo is
+meant to show:
 
 - **Query box** for free text, with a `top_k` control.
 - **Ranked researchers** from `/v1/match`, with the evidence behind each suggestion:
@@ -124,16 +180,6 @@ show:
   publication or posting index run.
 - **Clear error states** for the backend's coded errors (`index_not_built`, matcher
   unreachable) instead of a blank page.
-
-## Layout
-
-```
-src/app/            application code (app.ts, app.config.ts, app.routes.ts)
-src/styles.scss     global styles
-public/             static assets, copied as-is
-proxy.conf.json     dev-server proxy to the matcher API
-angular.json        CLI workspace config (serve → proxyConfig)
-```
 
 ## Related
 

@@ -1,0 +1,29 @@
+<header class="themis-toolbar" *transloco="let t; prefix: 'components.toolbar'">
+  <div class="container d-flex align-items-center gap-3">
+    <a class="themis-toolbar__brand themis-wordmark" [routerLink]="['/', lang$$(), 'home']" [attr.aria-label]="t('home')">
+      {{ t('brand') }}
+    </a>
+
+    <span class="flex-grow-1"></span>
+
+    <mat-button-toggle-group
+      [value]="lang$$()"
+      (change)="switchLang($event.value)"
+      [attr.aria-label]="t('language')"
+      hideSingleSelectionIndicator>
+      @for (lang of langs; track lang) {
+        <mat-button-toggle [value]="lang" [matTooltip]="t('lang-names.' + lang)">{{ lang | uppercase }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    <button
+      mat-button
+      type="button"
+      class="themis-toolbar__theme less-rounded"
+      (click)="theme.cycle()"
+      [matTooltip]="t('theme.' + theme.mode$$())"
+      [attr.aria-label]="t('theme.' + theme.mode$$())">
+      <fa-icon [icon]="themeIcon$$()"></fa-icon>
+    </button>
+  </div>
+</header>

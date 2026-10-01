@@ -1,0 +1,65 @@
+// The banner's layout: a large condensed headline with a serif tagline on the left, three numbered
+// steps on the right.
+
+.home__title {
+  // Overrides html-tags.styles.scss's compact h1; the encapsulated selector wins on specificity.
+  font-size: clamp(2.4rem, 5vw, 3.8rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.01em;
+  max-width: 12ch;
+}
+
+.home__tagline {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  max-width: 22ch;
+}
+
+.home__rules {
+  max-width: 24rem;
+}
+
+.home__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.home__step {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  align-items: baseline;
+}
+
+.home__step-number {
+  font-family: var(--themis-font-family-heading);
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--themis-accent);
+}
+
+.home__step-title {
+  // h2 from html-tags.styles.scss, set as the banner's tracked capitals.
+  font-size: 1.25rem !important;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+.home__step-body {
+  margin: .5rem 0 0;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.55;
+}
+
+.home__disclaimer {
+  margin: 2rem 0 0 3.5rem;
+  color: var(--themis-accent);
+}
+
+.home__preview {
+  --mat-card-outlined-container-color: var(--mat-sys-surface-container-low);
+}

@@ -1,0 +1,55 @@
+{
+  "shared": {
+    "app-name": "THEMIS"
+  },
+  "components": {
+    "toolbar": {
+      "brand": "THEMIS",
+      "home": "THEMIS — Startseite",
+      "language": "Sprache",
+      "lang-names": {
+        "en": "English",
+        "de": "Deutsch"
+      },
+      "theme": {
+        "system": "Farbmodus: System (Klick für hell)",
+        "light": "Farbmodus: hell (Klick für dunkel)",
+        "dark": "Farbmodus: dunkel (Klick für System)"
+      }
+    }
+  },
+  "pages": {
+    "home": {
+      "eyebrow": "Universität Zürich · Masterprojekt 2026",
+      "title": "Die passende Betreuung für deine Arbeit finden.",
+      "tagline": "THEsis Matching and Information System",
+      "steps": {
+        "describe": {
+          "title": "Beschreiben",
+          "body": "Beschreibe in eigenen Worten, woran du arbeiten möchtest. Keine Stichwörter, keine Fakultätskürzel, keine Literaturlisten."
+        },
+        "retrieve": {
+          "title": "Finden",
+          "body": "THEMIS liest Publikationen aus ZORA und offene Abschlussarbeiten der Institute und ordnet sie nach deiner Anfrage."
+        },
+        "shortlist": {
+          "title": "Auswählen",
+          "body": "Du erhältst eine geordnete Auswahl an Betreuenden, Forschungsgruppen und konkreten Arbeiten — jeweils mit den Einträgen, auf denen der Vorschlag beruht."
+        }
+      },
+      "disclaimer": "Orientierung, keine Empfehlung.",
+      "preview": {
+        "title": "Theme-Vorschau",
+        "subtitle": "Die Bedienelemente, aus denen die Matcher-Funktionen gebaut werden.",
+        "query-label": "Woran möchtest du arbeiten?",
+        "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
+        "match": "Forschende finden",
+        "recommend": "Empfehlung erhalten",
+        "index": "Index-Status",
+        "disabled": "Deaktiviert",
+        "toggle": "Offene Abschlussarbeiten einbeziehen",
+        "coming-soon": "Matching, Empfehlungen und das Index-Panel folgen mit den nächsten Features. Diese Karte zeigt nur das Theme."
+      }
+    }
+  }
+}

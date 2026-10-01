@@ -2,9 +2,39 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "pnpm",
+    "schematicCollections": [
+      "angular-eslint"
+    ],
+    "analytics": false
   },
   "newProjectRoot": "projects",
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
+  },
   "projects": {
     "themis-demo": {
       "projectType": "application",
@@ -15,63 +45,120 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "themis",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/themis-demo",
+            "index": "src/index.html",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
+                "glob": "favicon.ico",
+                "input": "src",
+                "output": "/"
+              },
+              {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets",
+                "output": "/assets"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "src/styles/core/_global-setup.scss",
+              "src/styles/core/styles.scss",
+              "src/styles/theme/themis.scss",
+              "src/styles/html-tags.styles.scss",
+              "src/styles/material/customization.styles.scss",
+              "src/styles/helpers.styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": [
+                  "color-functions",
+                  "global-builtin",
+                  "import"
+                ]
+              },
+              "includePaths": [
+                "src/styles"
+              ]
+            },
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@messageformat/core"
+            ]
           },
           "configurations": {
-            "production": {
+            "prod": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1.5MB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
                 }
               ],
-              "outputHashing": "all"
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true
             },
-            "development": {
+            "local": {
+              "fileReplacements": [],
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "prod"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "proxyConfig": "proxy.conf.json"
-          },
           "configurations": {
-            "production": {
-              "buildTarget": "themis-demo:build:production"
+            "prod": {
+              "buildTarget": "themis-demo:build:prod"
             },
-            "development": {
-              "buildTarget": "themis-demo:build:development"
+            "local": {
+              "buildTarget": "themis-demo:build:local"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "themis-demo:build:local",
+            "runner": "vitest",
+            "tsConfig": "tsconfig.spec.json",
+            "setupFiles": [
+              "src/testing/test-setup.ts"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
