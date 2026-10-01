@@ -1,0 +1,67 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Secrets and local environment
+#   Mirrors backend-core: tokens and .env files never get committed. A committed
+#   .env.example is the place to document variables.
+token.secret
+*.secret
+.env
+.env.*
+!.env.example
+.envrc
+
+# Cursor
+.cursorignore
+.cursorindexingignore
+
+# project specific
+
+# graphify / knowledge-graph tool output
+graphify-out/
+
+# Claude
+#   CLAUDE.md is tracked on purpose: it is the shared agent brief for the team.
+.claude/
