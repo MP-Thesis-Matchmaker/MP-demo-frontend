@@ -1,0 +1,46 @@
+// Compile-time values only. This file emits NO CSS: every stylesheet that `@use`s it would otherwise get
+// its own copy (hui-client's vars.scss printed its colour classes into each bundle that used it).
+//
+// Colours that must follow light/dark mode are NOT here. They are `var(--mat-sys-*)` tokens, emitted
+// once by core/_global-setup.scss as `light-dark()` values. Reach for a Sass colour from this file only
+// where a runtime value cannot work — Bootstrap's own Sass variables, mainly. See styles/README.md.
+
+@use 'sass:map';
+@use 'base-colors' as base-colors;
+
+/* -------------------------------------------------------------------------- */
+/*                  Breakpoints (as used by Bootstrap 5.3)                    */
+/* -------------------------------------------------------------------------- */
+$sm-breakpoint: 576px;
+$md-breakpoint: 768px;
+$lg-breakpoint: 992px;
+$xl-breakpoint: 1200px;
+$xxl-breakpoint: 1400px;
+
+/* -------------------------------------------------------------------------- */
+/*                              Material palettes                             */
+/* -------------------------------------------------------------------------- */
+$primary-palette: base-colors.$primary-palette;
+$tertiary-palette: base-colors.$tertiary-palette;
+
+/* -------------------------------------------------------------------------- */
+/*                          Fixed tones (compile time)                        */
+/* -------------------------------------------------------------------------- */
+@function primary($tone) { @return map.get(base-colors.$palette-primary-tones, $tone); }
+@function neutral($tone) { @return map.get(base-colors.$palette-neutral-tones, $tone); }
+@function error($tone) { @return map.get(base-colors.$palette-error-tones, $tone); }
+@function success($tone) { @return map.get(base-colors.$palette-success-tones, $tone); }
+@function warning($tone) { @return map.get(base-colors.$palette-warning-tones, $tone); }
+
+// The banner's background is pure black; Material's dark surface (neutral 6, #141317) reads grey next to
+// it. Dark surfaces are pulled toward the banner in core/_global-setup.scss with these.
+$dark-surface: #0b0a0e;
+$dark-surface-dim: #070609;
+
+/* -------------------------------------------------------------------------- */
+/*                                  Fonts                                     */
+/* -------------------------------------------------------------------------- */
+// Families are runtime custom properties, defined in theme/themis.scss next to their @font-face rules.
+$font-family-body: var(--themis-font-family-body);
+$font-family-heading: var(--themis-font-family-heading);
+$font-family-serif: var(--themis-font-family-serif);

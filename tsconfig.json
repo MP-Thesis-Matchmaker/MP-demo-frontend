@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -11,13 +12,17 @@
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "esModuleInterop": true,
+    /* Lazy Transloco scopes and the Transloco testing helper import their JSON bundle directly. */
+    "resolveJsonModule": true,
     "target": "ES2022",
     "module": "preserve"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   },
   "files": [],
   "references": [

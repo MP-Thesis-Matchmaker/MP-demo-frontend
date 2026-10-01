@@ -1,0 +1,72 @@
+// The THEMIS brand layer: fonts and the few brand values Material's roles do not cover. Taken from
+// docs/branding/themis-banner.png in backend-core — a condensed sans for headings and the wordmark,
+// a neutral grotesque for body copy, and a serif italic for taglines.
+//
+// hui-client keeps one such file per customer and swaps them at runtime; THEMIS has one brand, so this is
+// an ordinary global stylesheet.
+
+// Self-hosted through @fontsource (no request to a font CDN), the way hui-client self-hosts Poppins.
+// (Explicit namespaces: Sass derives one from the file name, and `400` is not a valid identifier.)
+@use '@fontsource-variable/inter/index.css' as inter;
+@use '@fontsource/oswald/400.css' as oswald-400;
+@use '@fontsource/oswald/500.css' as oswald-500;
+@use '@fontsource/source-serif-4/400-italic.css' as source-serif-400-italic;
+
+:root,
+.cdk-overlay-container {
+  --themis-font-family-body: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --themis-font-family-heading: 'Oswald', 'Arial Narrow', sans-serif;
+  --themis-font-family-serif: 'Source Serif 4', Georgia, serif;
+
+  // The banner's muted violets — its rule lines and step numbers. Decorative only: anything a user has
+  // to read or press uses a Material role instead.
+  --themis-accent: light-dark(#67529b, #c0a8f8);
+  --themis-accent-muted: light-dark(#9080c8, #605088);
+  --themis-accent-dim: light-dark(#cdc1e4, #403858);
+}
+
+/* The banner's typographic pieces, reusable anywhere. */
+
+.themis-wordmark {
+  font-family: var(--themis-font-family-heading);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+.themis-eyebrow {
+  font-family: var(--themis-font-family-heading);
+  font-weight: 500;
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--themis-accent);
+}
+
+.tagline {
+  font-family: var(--themis-font-family-serif);
+  font-style: italic;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+/* The stack of shortening rules under the banner's headline. */
+.themis-rule-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &::before,
+  &::after,
+  > span {
+    content: '';
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+  }
+
+  &::before { width: 100%; background: var(--themis-accent-dim); }
+  > span:nth-child(1) { width: 78%; background: var(--themis-accent-dim); }
+  > span:nth-child(2) { width: 56%; background: var(--themis-accent-muted); }
+  > span:nth-child(3) { width: 36%; background: var(--themis-accent-muted); }
+  &::after { width: 18%; background: var(--themis-accent); }
+}

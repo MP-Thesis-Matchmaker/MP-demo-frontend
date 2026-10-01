@@ -1,0 +1,70 @@
+@use 'core/vars' as vars;
+
+// hui-client's plain-element rules, with every colour moved onto a Material token so it follows the
+// active mode. hui pins these to fixed Sass colours (black text), which dark mode cannot survive.
+
+h1 {
+  color: var(--mat-sys-on-surface) !important;
+  font-size: 1.6rem !important;
+  font-family: vars.$font-family-heading !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  margin-bottom: 0 !important;
+}
+
+h2 {
+  color: var(--mat-sys-on-surface) !important;
+  font-size: 1.35rem !important;
+  font-family: vars.$font-family-heading !important;
+  font-weight: 500 !important;
+  margin-bottom: 0 !important;
+}
+
+h3 {
+  color: var(--mat-sys-on-surface) !important;
+  font-size: 1.15rem !important;
+  font-family: vars.$font-family-heading !important;
+  font-weight: 500 !important;
+  margin-bottom: 0 !important;
+}
+
+h4 {
+  color: var(--mat-sys-on-surface) !important;
+  font-size: 1rem !important;
+  font-family: vars.$font-family-heading !important;
+  font-weight: 400 !important;
+  margin-bottom: 0 !important;
+}
+
+h5 {
+  color: var(--mat-sys-on-surface) !important;
+  font-size: .9rem !important;
+  font-family: vars.$font-family-body !important;
+  font-weight: 600 !important;
+  margin-bottom: 0 !important;
+}
+
+p {
+  color: var(--mat-sys-on-surface);
+  font-family: vars.$font-family-body;
+}
+
+a {
+  color: var(--mat-sys-primary);
+  font-family: vars.$font-family-body;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+button {
+  font-family: vars.$font-family-body !important;
+}
+
+html, body {
+  font-family: vars.$font-family-body !important;
+  margin: 0 !important;
+  scrollbar-gutter: stable;
+}

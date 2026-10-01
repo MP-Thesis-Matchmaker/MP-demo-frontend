@@ -1,0 +1,55 @@
+{
+  "shared": {
+    "app-name": "THEMIS"
+  },
+  "components": {
+    "toolbar": {
+      "brand": "THEMIS",
+      "home": "THEMIS — home",
+      "language": "Language",
+      "lang-names": {
+        "en": "English",
+        "de": "Deutsch"
+      },
+      "theme": {
+        "system": "Colour mode: system (click for light)",
+        "light": "Colour mode: light (click for dark)",
+        "dark": "Colour mode: dark (click for system)"
+      }
+    }
+  },
+  "pages": {
+    "home": {
+      "eyebrow": "University of Zurich · Master's project 2026",
+      "title": "Finding the right supervisor match for you.",
+      "tagline": "THEsis Matching and Information System",
+      "steps": {
+        "describe": {
+          "title": "Describe",
+          "body": "Write the work you want to do in plain language. No keywords, no faculty codes, no reading lists."
+        },
+        "retrieve": {
+          "title": "Retrieve",
+          "body": "THEMIS reads publication records from ZORA and open thesis postings across the departments, then ranks them against your query."
+        },
+        "shortlist": {
+          "title": "Shortlist",
+          "body": "You get a ranked shortlist of supervisors, research groups and concrete thesis positions — each one shown with the records it matched on."
+        }
+      },
+      "disclaimer": "Orientation, not endorsement.",
+      "preview": {
+        "title": "Theme preview",
+        "subtitle": "The controls the matcher features will be built from.",
+        "query-label": "What would you like to work on?",
+        "query-placeholder": "e.g. a master's thesis in NLP on retrieval-augmented generation",
+        "match": "Find researchers",
+        "recommend": "Get a recommendation",
+        "index": "Index status",
+        "disabled": "Disabled",
+        "toggle": "Include open thesis postings",
+        "coming-soon": "Matching, recommendations and the index panel arrive with the next features. This card only previews the theme."
+      }
+    }
+  }
+}

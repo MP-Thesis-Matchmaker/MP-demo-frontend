@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.themis-toolbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--mat-sys-surface) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  &__brand {
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--mat-sys-on-surface);
+
+    &:hover {
+      text-decoration: none;
+      color: var(--mat-sys-primary);
+    }
+  }
+
+  &__theme {
+    font-size: 1.1rem !important;
+  }
+}

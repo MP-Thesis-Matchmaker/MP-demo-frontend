@@ -7,9 +7,12 @@
 /bazel-out
 
 # Node
+#   pnpm is the package manager (packageManager in package.json); a package-lock.json
+#   only appears when someone runs npm by mistake, and would drift from pnpm-lock.yaml.
 /node_modules
 npm-debug.log
 yarn-error.log
+package-lock.json
 
 # IDEs and editors
 .idea/

@@ -1,0 +1,32 @@
+@use './core/vars' as vars;
+
+/* -------------------------------------------------------------------------- */
+/*                              GLOBAL HELPERS                                */
+/* -------------------------------------------------------------------------- */
+
+.pointer {
+  cursor: pointer !important;
+}
+
+.ellipsis-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Blurs an element's content while something loads over it. Global so a loader can apply it to
+   children owned by another component, which encapsulated styles cannot reach. */
+.themis-overlay-blurred {
+  filter: grayscale(100%) blur(5px);
+  pointer-events: none;
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Semantic text colours. Bootstrap's `.text-danger` / `.text-success` / `.text-secondary` paint its own
+   reds and greens, which appear nowhere else in the app; these use the theme's. */
+.text-themis-error { color: var(--mat-sys-error) !important; }
+.text-themis-success { color: light-dark(#{vars.success(40)}, #{vars.success(80)}) !important; }
+.text-themis-hint { color: var(--mat-sys-on-surface-variant) !important; }

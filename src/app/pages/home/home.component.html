@@ -1,0 +1,53 @@
+<main class="container py-6" *transloco="let t; prefix: 'pages.home'">
+  <div class="row gy-6 gx-lg-7 align-items-start">
+
+    <section class="col-lg-6">
+      <p class="themis-eyebrow mb-3">{{ t('eyebrow') }}</p>
+      <h1 class="home__title">{{ t('title') }}</h1>
+      <p class="tagline home__tagline mt-3">{{ t('tagline') }}</p>
+      <div class="themis-rule-stack home__rules mt-5" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+    </section>
+
+    <section class="col-lg-6">
+      <ol class="home__steps">
+        @for (step of steps; track step; let i = $index) {
+          <li class="home__step">
+            <span class="home__step-number" aria-hidden="true">0{{ i + 1 }}</span>
+            <div>
+              <h2 class="home__step-title">{{ t('steps.' + step + '.title') }}</h2>
+              <p class="home__step-body">{{ t('steps.' + step + '.body') }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+      <p class="tagline home__disclaimer">{{ t('disclaimer') }}</p>
+    </section>
+
+  </div>
+
+  <mat-card appearance="outlined" class="home__preview mt-7">
+    <mat-card-header>
+      <mat-card-title>{{ t('preview.title') }}</mat-card-title>
+      <mat-card-subtitle>{{ t('preview.subtitle') }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="pt-4">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ t('preview.query-label') }}</mat-label>
+        <input matInput type="text" [placeholder]="t('preview.query-placeholder')">
+        <fa-icon matSuffix icon="magnifying-glass" class="fa-themis-muted px-2"></fa-icon>
+      </mat-form-field>
+
+      <div class="d-flex flex-wrap align-items-center gap-3">
+        <button mat-flat-button type="button">{{ t('preview.match') }}</button>
+        <button mat-stroked-button type="button">{{ t('preview.recommend') }}</button>
+        <button mat-flat-button type="button" class="color-inv less-rounded">{{ t('preview.index') }}</button>
+        <button mat-flat-button type="button" disabled>{{ t('preview.disabled') }}</button>
+        <mat-slide-toggle [checked]="true">{{ t('preview.toggle') }}</mat-slide-toggle>
+      </div>
+
+      <div class="info-banner mt-4 mb-0">{{ t('preview.coming-soon') }}</div>
+    </mat-card-content>
+  </mat-card>
+</main>
