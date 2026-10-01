@@ -4,12 +4,12 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialog} from '@angular/material/dialog';
 import {provideRouter} from '@angular/router';
 import {provideTranslocoMessageformat} from '@jsverse/transloco-messageformat';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {IndexRun, IndexStatus} from '../../models/matcher.model';
 import {provideFontawesome} from '../../services/fontawesome.service';
 import {themisTranslocoTesting, translocoLocaleTesting} from '../../../testing/transloco-testing';
-import {formatDuration, IndexComponent} from './index.component';
+import {formatDuration, IndexComponent, UNLOCK_PHRASE} from './index.component';
 
 const base = `${environment.matcherOrigin}/v1`;
 
@@ -39,7 +39,7 @@ describe('IndexComponent', () => {
   let fixture: ComponentFixture<IndexComponent>;
   let http: HttpTestingController;
   let el: HTMLElement;
-  const dialog = {open: vi.fn(() => ({afterClosed: () => of(true)}))};
+  const dialog = {open: vi.fn((): {afterClosed: () => Observable<boolean>} => ({afterClosed: () => of(true)}))};
 
   async function settle(ms = 0): Promise<void> {
     TestBed.tick();
@@ -54,6 +54,12 @@ describe('IndexComponent', () => {
 
   function triggers(): HTMLButtonElement[] {
     return Array.from(el.querySelectorAll<HTMLButtonElement>('.index__trigger'));
+  }
+
+  /** Through the Danger Zone; the mocked dialog answers as if the phrase was typed. */
+  async function unlock(): Promise<void> {
+    el.querySelector<HTMLButtonElement>('.index__unlock')!.click();
+    await settle();
   }
 
   beforeEach(async () => {
@@ -99,12 +105,51 @@ describe('IndexComponent', () => {
     expect(el.querySelector('themis-matcher-error')).toBeNull();
   });
 
-  it('confirms, starts a run, polls it to the end and reloads', async () => {
+  it('keeps the triggers locked until the Danger Zone is unlocked', async () => {
     flushInitial();
     await settle();
+    expect(triggers().every(b => b.disabled)).toBe(true);
+
+    await unlock();
+    expect(dialog.open).toHaveBeenCalledOnce();
+    expect(dialog.open.mock.calls[0]).toEqual([expect.anything(), expect.objectContaining({
+      data: expect.objectContaining({phrase: UNLOCK_PHRASE, danger: true})
+    })]);
+    expect(triggers().some(b => b.disabled)).toBe(false);
+
+    el.querySelector<HTMLButtonElement>('.index__lock')!.click();
+    await settle();
+    expect(triggers().every(b => b.disabled)).toBe(true);
+  });
+
+  it('stays locked when the unlock dialog is dismissed', async () => {
+    flushInitial();
+    await settle();
+    dialog.open.mockReturnValueOnce({afterClosed: () => of(false)});
+
+    await unlock();
+    expect(triggers().every(b => b.disabled)).toBe(true);
+    expect(el.querySelector('.index__unlock')).not.toBeNull();
+  });
+
+  it('stays unlocked when the run confirm is cancelled', async () => {
+    flushInitial();
+    await settle();
+    await unlock();
+    dialog.open.mockReturnValueOnce({afterClosed: () => of(false)});
 
     triggers()[0].click();
-    expect(dialog.open).toHaveBeenCalledOnce();
+    await settle();
+    expect(triggers().some(b => b.disabled)).toBe(false);
+  });
+
+  it('confirms, starts a run, polls it to the end, reloads and locks again', async () => {
+    flushInitial();
+    await settle();
+    await unlock();
+
+    triggers()[0].click();
+    expect(dialog.open).toHaveBeenCalledTimes(2);
     http.expectOne({method: 'POST', url: `${base}/index/publications`})
       .flush({run_id: 9, kind: 'publication'}, {status: 202, statusText: 'Accepted'});
     await settle();
@@ -124,12 +169,15 @@ describe('IndexComponent', () => {
 
     expect(el.querySelector('.index__watched')?.textContent).toContain('Run #9 finished');
     expect(el.querySelector('.index__watched')?.textContent).toContain('3 documents embedded, 10 unchanged');
-    expect(triggers().some(b => b.disabled)).toBe(false);
+    // One unlock bought one run.
+    expect(triggers().every(b => b.disabled)).toBe(true);
+    expect(el.querySelector('.index__unlock')).not.toBeNull();
   });
 
   it('follows the run that blocks a trigger', async () => {
     flushInitial();
     await settle();
+    await unlock();
 
     triggers()[1].click();
     http.expectOne(`${base}/index/postings`).flush(

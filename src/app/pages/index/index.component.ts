@@ -7,7 +7,7 @@ import {MatTableModule} from '@angular/material/table';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {TranslocoDirective} from '@jsverse/transloco';
 import {DateFormatOptions, TranslocoDatePipe, TranslocoDecimalPipe} from '@jsverse/transloco-locale';
-import {filter, Subscription, switchMap} from 'rxjs';
+import {filter, Subscription, switchMap, tap} from 'rxjs';
 import {ConfirmDialogComponent, ConfirmDialogData} from '../../components/confirm-dialog/confirm-dialog.component';
 import {MatcherErrorComponent} from '../../components/matcher-error/matcher-error.component';
 import {IndexRun, IndexTrigger} from '../../models/matcher.model';
@@ -15,6 +15,9 @@ import {MatcherApiService} from '../../services/matcher-api.service';
 import {MatcherError, toMatcherError} from '../../utils/matcher-error.util';
 
 const RUN_LIMIT = 20;
+
+/** Typed to enable the triggers. The product's name, so the same in every language. */
+export const UNLOCK_PHRASE = 'Themis: Matching Information System';
 
 /** "1 h 02 min", "3 min 05 s", "12 s". */
 export function formatDuration(ms: number): string {
@@ -66,6 +69,11 @@ export class IndexComponent {
 
   /** The run this page is polling: one it started, the one blocking a trigger, or one found running on load. */
   protected readonly watchedRun$$ = signal<IndexRun | undefined>(undefined);
+  /**
+   * The Danger Zone. Both triggers stay disabled until the unlock phrase is typed, and confirming a run
+   * locks them again: one unlock buys one run. Component state, so leaving the page locks it too.
+   */
+  protected readonly unlocked$$ = signal(false);
   /** A failed trigger, shown under the buttons. */
   protected readonly triggerError$$ = signal<MatcherError | undefined>(undefined);
 
@@ -97,6 +105,24 @@ export class IndexComponent {
     });
   }
 
+  protected unlock(): void {
+    const data: ConfirmDialogData = {
+      titleKey: 'pages.index.unlock.title',
+      bodyKey: 'pages.index.unlock.body',
+      confirmKey: 'pages.index.unlock.confirm',
+      phrase: UNLOCK_PHRASE,
+      danger: true
+    };
+    this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {data, maxWidth: '32rem'})
+      .afterClosed()
+      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.unlocked$$.set(true));
+  }
+
+  protected lock(): void {
+    this.unlocked$$.set(false);
+  }
+
   protected trigger(trigger: IndexTrigger): void {
     const data: ConfirmDialogData = {
       titleKey: `pages.index.confirm.${trigger}.title`,
@@ -109,6 +135,8 @@ export class IndexComponent {
       .afterClosed()
       .pipe(
         filter(Boolean),
+        // Locked before the POST, whatever it returns: the unlock was for this one attempt.
+        tap(() => this.lock()),
         switchMap(() => this.api.triggerIndex(trigger)),
         takeUntilDestroyed(this.destroyRef)
       )

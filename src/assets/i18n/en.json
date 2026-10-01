@@ -82,7 +82,8 @@
       }
     },
     "confirm-dialog": {
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "phrase-label": "To confirm, type"
     }
   },
   "pages": {
@@ -157,9 +158,21 @@
       },
       "trigger": {
         "title": "Re-index",
-        "body": "Runs in the background on the matcher. Unchanged documents are skipped; only one run can hold the index at a time.",
+        "body": "Runs in the background on the matcher. Unchanged documents are skipped; only one run can hold the index at a time. The buttons stay locked until you enable re-indexing in the Danger Zone.",
         "publications": "Re-index publications",
         "postings": "Re-index thesis postings"
+      },
+      "danger": {
+        "title": "Danger zone",
+        "body": "Re-indexing can delete indexed documents that are missing from the configured source. The buttons below are locked.",
+        "unlock": "Enable re-indexing",
+        "unlocked": "Re-indexing is enabled for one run. Starting a run locks it again.",
+        "lock": "Lock again"
+      },
+      "unlock": {
+        "title": "Enable re-indexing?",
+        "body": "A re-index replaces what the matcher searches. Only enable it if you mean to start a run now.",
+        "confirm": "Enable"
       },
       "confirm": {
         "start": "Start run",

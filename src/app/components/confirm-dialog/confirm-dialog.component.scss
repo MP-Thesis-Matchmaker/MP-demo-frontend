@@ -1,0 +1,10 @@
+.confirm-dialog__phrase code {
+  color: inherit;
+  font-weight: 600;
+  user-select: all;
+}
+
+.confirm-dialog__confirm--danger:not(:disabled) {
+  --mat-button-filled-container-color: var(--mat-sys-error);
+  --mat-button-filled-label-text-color: var(--mat-sys-on-error);
+}

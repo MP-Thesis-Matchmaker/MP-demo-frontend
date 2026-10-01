@@ -82,7 +82,8 @@
       }
     },
     "confirm-dialog": {
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "phrase-label": "Zur Bestätigung eintippen:"
     }
   },
   "pages": {
@@ -157,9 +158,21 @@
       },
       "trigger": {
         "title": "Neu indexieren",
-        "body": "Läuft im Hintergrund auf dem Matcher. Unveränderte Dokumente werden übersprungen; es kann immer nur ein Lauf den Index belegen.",
+        "body": "Läuft im Hintergrund auf dem Matcher. Unveränderte Dokumente werden übersprungen; es kann immer nur ein Lauf den Index belegen. Die Schaltflächen bleiben gesperrt, bis du das Neuindexieren in der Gefahrenzone freigibst.",
         "publications": "Publikationen neu indexieren",
         "postings": "Ausschreibungen neu indexieren"
+      },
+      "danger": {
+        "title": "Gefahrenzone",
+        "body": "Neuindexieren kann indexierte Dokumente löschen, die in der konfigurierten Quelle fehlen. Die Schaltflächen unten sind gesperrt.",
+        "unlock": "Neuindexieren freigeben",
+        "unlocked": "Neuindexieren ist für einen Lauf freigegeben. Ein gestarteter Lauf sperrt es wieder.",
+        "lock": "Wieder sperren"
+      },
+      "unlock": {
+        "title": "Neuindexieren freigeben?",
+        "body": "Ein Neuindexieren ersetzt, was der Matcher durchsucht. Gib es nur frei, wenn du jetzt einen Lauf starten willst.",
+        "confirm": "Freigeben"
       },
       "confirm": {
         "start": "Lauf starten",

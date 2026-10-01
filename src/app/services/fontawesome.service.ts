@@ -11,11 +11,14 @@ import {
   faDatabase as faSolidDatabase,
   faGraduationCap as faSolidGraduationCap,
   faLanguage as faSolidLanguage,
+  faLock as faSolidLock,
+  faLockOpen as faSolidLockOpen,
   faMagnifyingGlass as faSolidMagnifyingGlass,
   faMoon as faSolidMoon,
   faPlug as faSolidPlug,
   faRotate as faSolidRotate,
-  faSun as faSolidSun
+  faSun as faSolidSun,
+  faTriangleExclamation as faSolidTriangleExclamation
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faCircleQuestion as faRegularCircleQuestion
@@ -55,11 +58,14 @@ export class FontawesomeService {
       faSolidDatabase,
       faSolidGraduationCap,
       faSolidLanguage,
+      faSolidLock,
+      faSolidLockOpen,
       faSolidMagnifyingGlass,
       faSolidMoon,
       faSolidPlug,
       faSolidRotate,
-      faSolidSun
+      faSolidSun,
+      faSolidTriangleExclamation
     );
   }
 
