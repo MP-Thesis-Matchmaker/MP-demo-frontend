@@ -1,8 +1,8 @@
-import {Component, computed, effect, inject, input, untracked} from '@angular/core';
+import {Component, computed, effect, ElementRef, inject, input, untracked, viewChild} from '@angular/core';
 import {rxResource} from '@angular/core/rxjs-interop';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {TextFieldModule} from '@angular/cdk/text-field';
+import {CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -48,7 +48,9 @@ function parseTopK(raw: string | undefined): number {
     RecommendationPanelComponent
   ],
   templateUrl: './search.component.html',
-  styleUrl: './search.component.scss'
+  styleUrl: './search.component.scss',
+  // A drag can end outside the textarea, where its own pointerup never fires.
+  host: {'(document:pointerup)': 'endManualResize()'}
 })
 export class SearchComponent {
 
@@ -98,6 +100,11 @@ export class SearchComponent {
     return match && recommend && match.kind === recommend.kind ? match : undefined;
   });
 
+  private readonly queryArea = viewChild.required<ElementRef<HTMLTextAreaElement>>('queryArea');
+  private readonly autosize = viewChild.required(CdkTextareaAutosize);
+  /** The textarea's height when a pointer went down on it, to tell a resize drag from a click. */
+  private heightAtPointerDown?: number;
+
   constructor() {
     // URL → form, so the box shows what the results are for (also after back/forward).
     effect(() => {
@@ -128,6 +135,28 @@ export class SearchComponent {
   protected runExample(query: string): void {
     this.form.controls.query.setValue(query);
     this.submit();
+  }
+
+  protected startManualResize(): void {
+    this.heightAtPointerDown = this.queryArea().nativeElement.offsetHeight;
+  }
+
+  /**
+   * After a drag on the resize handle, the user's height wins over autosize: left on, autosize would snap
+   * the box back on the next keystroke, and its inline max-height caps the drag at 8 rows. Turning it off
+   * resets to the initial height, so the dragged one is put back afterwards.
+   */
+  protected endManualResize(): void {
+    const before = this.heightAtPointerDown;
+    this.heightAtPointerDown = undefined;
+    const textarea = this.queryArea().nativeElement;
+    if (before === undefined || textarea.offsetHeight === before) {
+      return;
+    }
+    const height = textarea.style.height || `${textarea.offsetHeight}px`;
+    this.autosize().enabled = false;
+    textarea.style.height = height;
+    textarea.style.maxHeight = '';
   }
 
   private toError(error: unknown): MatcherError | undefined {

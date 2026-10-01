@@ -12,17 +12,28 @@
   display: flex;
   flex-wrap: wrap;
   // The row gap clears the outline label that floats above the wrapped controls.
-  gap: .75rem 1rem;
+  gap: 1.25rem 1.5rem;
   align-items: flex-start;
+  margin-top: 2rem;
 }
 
 .search__query {
   flex: 1 1 28rem;
+
+  // Room between the outline and the hint, which otherwise hugs the field.
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    margin-top: .375rem;
+  }
+}
+
+// CDK's autosize styles hide the resize handle; give it back (see SearchComponent.endManualResize).
+textarea.search__textarea.cdk-textarea-autosize {
+  resize: vertical;
 }
 
 .search__controls {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   // The select has no subscript, so stretching makes the button exactly as tall as the field.
   align-items: stretch;
 }
@@ -40,19 +51,26 @@
 .search__examples {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem;
+  gap: .75rem;
   align-items: center;
-  margin-top: .5rem;
+  margin-top: 1.75rem;
 }
 
 .search__examples-label {
   font-size: .85rem;
   color: var(--mat-sys-on-surface-variant);
-  margin-right: .25rem;
+  margin-right: .5rem;
 }
 
 .search__example {
   font-size: .85rem !important;
+  padding-inline: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .search__examples {
+    margin-top: 2rem;
+  }
 }
 
 .search__section-title {
@@ -106,8 +124,13 @@
 }
 
 @media (max-width: 575.98px) {
+  .search__form {
+    gap: 1rem;
+  }
+
   .search__controls {
     width: 100%;
+    gap: 1rem;
   }
 
   .search__top-k,
