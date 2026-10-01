@@ -1,0 +1,163 @@
+<main class="container py-5" *transloco="let t; prefix: 'pages.index'">
+  <p class="themis-eyebrow mb-2">{{ t('eyebrow') }}</p>
+  <h1 class="index__title">{{ t('title') }}</h1>
+  <p class="index__lead">{{ t('lead') }}</p>
+
+  <div class="row gy-4 mt-1">
+    <section class="col-lg-5" aria-labelledby="index-status-title">
+      <div class="index__card h-100">
+        <h2 id="index-status-title" class="index__section-title">{{ t('status.title') }}</h2>
+
+        @if (status.isLoading()) {
+          <mat-spinner diameter="28"></mat-spinner>
+        } @else if (statusError$$(); as error) {
+          @if (error.kind === 'index-not-built') {
+            <div class="empty-info-box py-4">
+              <fa-icon icon="database" class="empty-info-box__icon"></fa-icon>
+              <h3 class="empty-info-box__title">{{ t('status.empty.title') }}</h3>
+              <p class="empty-info-box__body">{{ t('status.empty.body') }}</p>
+            </div>
+          } @else {
+            <themis-matcher-error [error]="error"></themis-matcher-error>
+          }
+        } @else if (status.hasValue()) {
+          <dl class="index__facts">
+            <dt>{{ t('status.documents') }}</dt>
+            <dd class="index__documents">{{ status.value().document_count | translocoDecimal }}</dd>
+            <dt>{{ t('status.model') }}</dt>
+            <dd><code>{{ status.value().embedding_model }}</code></dd>
+            <dt>{{ t('status.dim') }}</dt>
+            <dd>{{ status.value().embedding_dim }}</dd>
+            @if (status.value().max_seq_length; as maxSeq) {
+              <dt>{{ t('status.max-seq') }}</dt>
+              <dd>{{ maxSeq | translocoDecimal }}</dd>
+            }
+            <dt>{{ t('status.truncated') }}</dt>
+            <dd>{{ status.value().truncated_docs | translocoDecimal }}</dd>
+            @if (status.value().sources; as sources) {
+              <dt>{{ t('status.sources') }}</dt>
+              <dd>{{ sources }}</dd>
+            }
+          </dl>
+        }
+      </div>
+    </section>
+
+    <section class="col-lg-7" aria-labelledby="index-trigger-title">
+      <div class="index__card h-100">
+        <h2 id="index-trigger-title" class="index__section-title">{{ t('trigger.title') }}</h2>
+        <p class="index__muted">{{ t('trigger.body') }}</p>
+
+        <div class="d-flex flex-wrap gap-3">
+          <button mat-flat-button type="button" class="index__trigger" [disabled]="running$$()" (click)="trigger('publications')">
+            <fa-icon icon="book"></fa-icon>
+            {{ t('trigger.publications') }}
+          </button>
+          <button mat-stroked-button type="button" class="index__trigger" [disabled]="running$$()" (click)="trigger('postings')">
+            <fa-icon icon="graduation-cap"></fa-icon>
+            {{ t('trigger.postings') }}
+          </button>
+        </div>
+
+        @if (triggerError$$(); as error) {
+          <themis-matcher-error class="mt-3" [error]="error"></themis-matcher-error>
+        }
+
+        @if (watchedRun$$(); as run) {
+          <div class="index__watched mt-3" [class]="'index__watched--' + run.state" aria-live="polite">
+            @switch (run.state) {
+              @case ('running') { <mat-spinner diameter="22"></mat-spinner> }
+              @case ('succeeded') { <fa-icon icon="circle-check" class="index__state-icon"></fa-icon> }
+              @case ('failed') { <fa-icon icon="circle-xmark" class="index__state-icon"></fa-icon> }
+            }
+            <div class="index__watched-body">
+              <p class="m-0">
+                <strong>{{ t('watched.' + run.state, {id: run.id}) }}</strong>
+                · {{ t('kinds.' + run.kind) }} · {{ duration(run) }}
+              </p>
+              @switch (run.state) {
+                @case ('running') {
+                  <p class="index__muted m-0">{{ t('watched.heartbeat', {seconds: secondsSince(run.heartbeat_at)}) }}</p>
+                }
+                @case ('succeeded') {
+                  <p class="index__muted m-0">{{ t('watched.counts', {embedded: run.embedded, skipped: run.skipped, deleted: run.deleted}) }}</p>
+                }
+                @case ('failed') {
+                  <pre class="index__error">{{ run.error }}</pre>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <section class="index__card mt-4" aria-labelledby="index-runs-title">
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <h2 id="index-runs-title" class="index__section-title m-0">{{ t('runs.title') }}</h2>
+      <span class="flex-grow-1"></span>
+      <button mat-button type="button" (click)="refresh()" [disabled]="runs.isLoading()">
+        <fa-icon icon="rotate"></fa-icon>
+        {{ t('runs.refresh') }}
+      </button>
+    </div>
+
+    @if (runsError$$(); as error) {
+      <themis-matcher-error [error]="error"></themis-matcher-error>
+    } @else if (runs.hasValue()) {
+      @if (runs.value().length === 0) {
+        <p class="index__muted m-0">{{ t('runs.empty') }}</p>
+      } @else {
+        <div class="index__table-wrap">
+          <table mat-table [dataSource]="runs.value()" class="index__table">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>#</th>
+              <td mat-cell *matCellDef="let run">{{ run.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="kind">
+              <th mat-header-cell *matHeaderCellDef>{{ t('runs.kind') }}</th>
+              <td mat-cell *matCellDef="let run">{{ t('kinds.' + run.kind) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="state">
+              <th mat-header-cell *matHeaderCellDef>{{ t('runs.state') }}</th>
+              <td mat-cell *matCellDef="let run">
+                <span class="index__state" [class]="'index__state--' + run.state">{{ t('states.' + run.state) }}</span>
+                @if (run.error) {
+                  <details class="index__error-details">
+                    <summary>{{ t('runs.error') }}</summary>
+                    <pre class="index__error">{{ run.error }}</pre>
+                  </details>
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="started">
+              <th mat-header-cell *matHeaderCellDef>{{ t('runs.started') }}</th>
+              <td mat-cell *matCellDef="let run" class="text-nowrap">{{ run.started_at | translocoDate: dateFormat }}</td>
+            </ng-container>
+            <ng-container matColumnDef="duration">
+              <th mat-header-cell *matHeaderCellDef>{{ t('runs.duration') }}</th>
+              <td mat-cell *matCellDef="let run" class="text-nowrap">{{ duration(run) }}</td>
+            </ng-container>
+            @for (counter of ['embedded', 'skipped', 'deleted', 'truncated']; track counter) {
+              <ng-container [matColumnDef]="counter">
+                <th mat-header-cell *matHeaderCellDef class="index__num">{{ t('runs.' + counter) }}</th>
+                <td mat-cell *matCellDef="let run" class="index__num">{{ run[counter] | translocoDecimal }}</td>
+              </ng-container>
+            }
+            <ng-container matColumnDef="invalid">
+              <th mat-header-cell *matHeaderCellDef class="index__num">{{ t('runs.invalid') }}</th>
+              <td mat-cell *matCellDef="let run" class="index__num">{{ run.invalid_lines | translocoDecimal }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let run; columns: columns"></tr>
+          </table>
+        </div>
+        <p class="index__muted index__footnote">{{ t('runs.footnote') }}</p>
+      }
+    } @else {
+      <mat-spinner diameter="28"></mat-spinner>
+    }
+  </section>
+</main>

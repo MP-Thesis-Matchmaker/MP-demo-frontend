@@ -70,6 +70,9 @@
         "title": "Etwas ist schiefgelaufen",
         "body": "Der Matcher hat einen unerwarteten Fehler gemeldet."
       }
+    },
+    "confirm-dialog": {
+      "cancel": "Abbrechen"
     }
   },
   "pages": {
@@ -131,6 +134,74 @@
           "title": "Keine Treffer",
           "body": "Niemand im Index passt zu dieser Anfrage. Versuche, sie anders zu formulieren."
         }
+      }
+    },
+    "index": {
+      "eyebrow": "Index",
+      "title": "Was der Matcher durchsucht.",
+      "lead": "THEMIS bettet ZORA-Publikationen und gesammelte Ausschreibungen für Abschlussarbeiten in einen gemeinsamen Vektorindex ein. Diese Seite zeigt, was darin steckt, den Verlauf der Indexierung, und lässt dich beide Quellen aktualisieren.",
+      "status": {
+        "title": "Aktueller Index",
+        "documents": "Dokumente",
+        "model": "Embedding-Modell",
+        "dim": "Dimensionen",
+        "max-seq": "Max. Sequenzlänge",
+        "truncated": "Gekürzte Dokumente",
+        "sources": "Quelle",
+        "empty": {
+          "title": "Noch kein Index",
+          "body": "Es wurde noch nichts indexiert. Starte rechts einen Lauf — der Matcher beantwortet Anfragen, sobald ein Index existiert."
+        }
+      },
+      "trigger": {
+        "title": "Neu indexieren",
+        "body": "Läuft im Hintergrund auf dem Matcher. Unveränderte Dokumente werden übersprungen; es kann immer nur ein Lauf den Index belegen.",
+        "publications": "Publikationen neu indexieren",
+        "postings": "Ausschreibungen neu indexieren"
+      },
+      "confirm": {
+        "start": "Lauf starten",
+        "publications": {
+          "title": "Publikationen neu indexieren?",
+          "body": "Der Matcher liest alle ZORA-Publikationen neu ein und bettet Geändertes ein. Je nach Korpus dauert das Minuten bis Stunden, und solange kann kein anderer Lauf starten."
+        },
+        "postings": {
+          "title": "Ausschreibungen neu indexieren?",
+          "body": "Der Matcher liest alle gesammelten Ausschreibungen neu ein und bettet Geändertes ein. Solange kann kein anderer Lauf starten."
+        }
+      },
+      "watched": {
+        "running": "Lauf #{{id}} läuft",
+        "succeeded": "Lauf #{{id}} abgeschlossen",
+        "failed": "Lauf #{{id}} fehlgeschlagen",
+        "heartbeat": "Letztes Lebenszeichen vor {{seconds}} s. Zahlen erscheinen, sobald der Lauf fertig ist.",
+        "counts": "{embedded, plural, one {# Dokument} other {# Dokumente}} eingebettet, {skipped} unverändert, {deleted} entfernt."
+      },
+      "kinds": {
+        "publication": "Publikationen",
+        "thesis_posting": "Ausschreibungen",
+        "all": "Alle Quellen"
+      },
+      "states": {
+        "running": "Läuft",
+        "succeeded": "Erfolgreich",
+        "failed": "Fehlgeschlagen"
+      },
+      "runs": {
+        "title": "Verlauf",
+        "refresh": "Aktualisieren",
+        "empty": "Noch keine Läufe erfasst. Indexe, die vor der Laufverfolgung über die Kommandozeile erstellt wurden, erscheinen hier nicht.",
+        "kind": "Quelle",
+        "state": "Status",
+        "error": "Fehler",
+        "started": "Gestartet",
+        "duration": "Dauer",
+        "embedded": "Eingebettet",
+        "skipped": "Übersprungen",
+        "deleted": "Gelöscht",
+        "truncated": "Gekürzt",
+        "invalid": "Ungültig",
+        "footnote": "Die letzten 20 Läufe. Zahlen werden erfasst, wenn ein Lauf endet."
       }
     }
   }

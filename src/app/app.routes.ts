@@ -15,6 +15,10 @@ export const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./pages/search/search.component').then(m => m.SearchComponent)
+      },
+      {
+        path: 'index',
+        loadComponent: () => import('./pages/index/index.component').then(m => m.IndexComponent)
       }
     ]
   },

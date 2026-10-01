@@ -70,6 +70,9 @@
         "title": "Something went wrong",
         "body": "The matcher returned an unexpected error."
       }
+    },
+    "confirm-dialog": {
+      "cancel": "Cancel"
     }
   },
   "pages": {
@@ -131,6 +134,74 @@
           "title": "No matches",
           "body": "Nobody in the index matched this query. Try describing it differently."
         }
+      }
+    },
+    "index": {
+      "eyebrow": "Index",
+      "title": "What the matcher searches.",
+      "lead": "THEMIS embeds ZORA publications and scraped thesis postings into one vector index. This page shows what is in it, the indexing history, and lets you refresh either source.",
+      "status": {
+        "title": "Current index",
+        "documents": "Documents",
+        "model": "Embedding model",
+        "dim": "Dimensions",
+        "max-seq": "Max. sequence length",
+        "truncated": "Truncated documents",
+        "sources": "Source",
+        "empty": {
+          "title": "No index yet",
+          "body": "Nothing has been indexed. Start a run on the right — the matcher answers queries once an index exists."
+        }
+      },
+      "trigger": {
+        "title": "Re-index",
+        "body": "Runs in the background on the matcher. Unchanged documents are skipped; only one run can hold the index at a time.",
+        "publications": "Re-index publications",
+        "postings": "Re-index thesis postings"
+      },
+      "confirm": {
+        "start": "Start run",
+        "publications": {
+          "title": "Re-index publications?",
+          "body": "The matcher re-reads all ZORA publications and embeds what changed. Depending on the corpus this takes minutes to hours, and no other run can start meanwhile."
+        },
+        "postings": {
+          "title": "Re-index thesis postings?",
+          "body": "The matcher re-reads all scraped thesis postings and embeds what changed. No other run can start meanwhile."
+        }
+      },
+      "watched": {
+        "running": "Run #{{id}} running",
+        "succeeded": "Run #{{id}} finished",
+        "failed": "Run #{{id}} failed",
+        "heartbeat": "Last heartbeat {{seconds}} s ago. Counts appear when the run finishes.",
+        "counts": "{embedded, plural, one {# document} other {# documents}} embedded, {skipped} unchanged, {deleted} removed."
+      },
+      "kinds": {
+        "publication": "Publications",
+        "thesis_posting": "Thesis postings",
+        "all": "All sources"
+      },
+      "states": {
+        "running": "Running",
+        "succeeded": "Succeeded",
+        "failed": "Failed"
+      },
+      "runs": {
+        "title": "Run history",
+        "refresh": "Refresh",
+        "empty": "No runs recorded yet. Indexes built from the command line before run tracking existed do not appear here.",
+        "kind": "Source",
+        "state": "State",
+        "error": "Error",
+        "started": "Started",
+        "duration": "Duration",
+        "embedded": "Embedded",
+        "skipped": "Skipped",
+        "deleted": "Deleted",
+        "truncated": "Truncated",
+        "invalid": "Invalid",
+        "footnote": "Latest 20 runs. Counts are recorded when a run finishes."
       }
     }
   }
