@@ -2,27 +2,81 @@
   display: block;
 }
 
+.search {
+  position: relative;
+}
+
+// Over the cards, so dots can land on them before they appear; it never takes a click.
+.search__field {
+  z-index: 2;
+}
+
 .search__title {
   font-size: clamp(1.8rem, 4vw, 2.6rem) !important;
   font-weight: 400 !important;
   line-height: 1.1 !important;
 }
 
+/* Before the first search the box is enlarged; the first query narrows it to the rules above. */
+
+.search--fresh {
+  padding-top: 4rem !important;
+
+  .search__title {
+    font-size: clamp(2.2rem, 5vw, 3.4rem) !important;
+  }
+
+  .search__query {
+    --mat-form-field-container-text-size: 1.2rem;
+    --mat-form-field-container-text-line-height: 1.75rem;
+  }
+
+  textarea.search__textarea {
+    min-height: 3lh;
+  }
+}
+
+// The narrowing is the router's view transition for the `?q=` navigation: these names let the browser
+// morph each piece from its enlarged box to its compact one (timing in theme/themis.scss). Only set
+// around the first search, so later navigations keep the plain crossfade.
+.search--morph {
+  .search__eyebrow { view-transition-name: search-eyebrow; }
+  .search__title { view-transition-name: search-title; }
+  .search__query { view-transition-name: search-query; }
+  .search__controls { view-transition-name: search-controls; }
+  .search__examples { view-transition-name: search-examples; }
+}
+
 .search__form {
   display: flex;
   flex-wrap: wrap;
   // The row gap clears the outline label that floats above the wrapped controls.
-  gap: .75rem 1rem;
+  gap: 1.25rem 1.5rem;
   align-items: flex-start;
+  margin-top: 2rem;
 }
 
 .search__query {
   flex: 1 1 28rem;
+
+  // Room between the outline and the hint, which otherwise hugs the field.
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    margin-top: .375rem;
+  }
+}
+
+// CDK's autosize styles hide the resize handle; give it back (see SearchComponent.endManualResize).
+// The row limits live here rather than in cdkAutosizeMin/MaxRows: CDK caches the line height once, so its
+// limits would go stale when the fresh box's larger font narrows to the compact one.
+textarea.search__textarea.cdk-textarea-autosize {
+  resize: vertical;
+  min-height: 2lh;
+  max-height: 8lh;
 }
 
 .search__controls {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   // The select has no subscript, so stretching makes the button exactly as tall as the field.
   align-items: stretch;
 }
@@ -40,19 +94,26 @@
 .search__examples {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem;
+  gap: .75rem;
   align-items: center;
-  margin-top: .5rem;
+  margin-top: 1.75rem;
 }
 
 .search__examples-label {
   font-size: .85rem;
   color: var(--mat-sys-on-surface-variant);
-  margin-right: .25rem;
+  margin-right: .5rem;
 }
 
 .search__example {
   font-size: .85rem !important;
+  padding-inline: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .search__examples {
+    margin-top: 2rem;
+  }
 }
 
 .search__section-title {
@@ -92,6 +153,22 @@
   gap: 1rem;
 }
 
+// The shortlist is laid out while the dots fly to it, invisible and with its entrance held; revealing it
+// starts the cards one after another (the video's .35s stagger) and their score bars filling.
+.search__match {
+  --rise: 24px;
+  --dur: .7s;
+  --d: calc(var(--i, 0) * .35s);
+}
+
+.search__matches--pending {
+  visibility: hidden;
+
+  .search__match {
+    animation-play-state: paused;
+  }
+}
+
 // Side by side only from lg up: keep the recommendation in view while scrolling the ranked list. A long
 // answer scrolls inside the panel, since a sticky box taller than the viewport would hide its own end.
 @media (min-width: 992px) {
@@ -106,8 +183,13 @@
 }
 
 @media (max-width: 575.98px) {
+  .search__form {
+    gap: 1rem;
+  }
+
   .search__controls {
     width: 100%;
+    gap: 1rem;
   }
 
   .search__top-k,

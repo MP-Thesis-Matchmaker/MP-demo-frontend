@@ -1,45 +1,73 @@
-<main class="container py-6" *transloco="let t; prefix: 'pages.home'">
-  <div class="row gy-6 gx-lg-7 align-items-start">
+<main [class]="'home home--' + mode$$()" *transloco="let t; prefix: 'pages.home'">
 
-    <section class="col-lg-6">
-      <p class="themis-eyebrow mb-3">{{ t('eyebrow') }}</p>
-      <h1 class="home__title">{{ t('title') }}</h1>
-      <p class="tagline home__tagline mt-3">{{ t('tagline') }}</p>
+  <section class="home__hero" aria-labelledby="home-title">
+    <themis-dot-field></themis-dot-field>
+    <div class="home__scrim" aria-hidden="true"></div>
 
-      <form class="home__query mt-5" (ngSubmit)="search()">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ t('query-label') }}</mat-label>
-          <input matInput type="text" [formControl]="query" [placeholder]="t('query-placeholder')">
-          <button mat-icon-button matSuffix type="submit" class="me-1" [attr.aria-label]="t('cta-search')">
-            <fa-icon icon="magnifying-glass"></fa-icon>
+    @if (arriving$$()) {
+      <div class="home__arrive" aria-hidden="true">
+        <p class="home__kicker home__arrive-kicker themis-anim">{{ t('hero.kicker') }}</p>
+        <p class="home__arrive-line themis-anim">{{ t('hero.arrive') }}</p>
+      </div>
+    }
+
+    <div class="container home__title">
+      <p class="home__kicker home__eyebrow themis-anim">{{ t('hero.kicker') }}</p>
+      <h1 id="home-title" class="home__wordmark">
+        <span class="visually-hidden">THEMIS</span>
+        <span aria-hidden="true">
+          @for (letter of letters; track $index) {
+            <span class="home__letter themis-anim" [style.--i]="$index">{{ letter }}</span>
+          }
+        </span>
+      </h1>
+      <p class="home__lede themis-anim">{{ t('hero.lede') }}</p>
+
+      <div class="home__actions themis-anim">
+        <form class="home__query" (ngSubmit)="search()">
+          <mat-form-field appearance="outline" class="w-100" subscriptSizing="dynamic">
+            <mat-label>{{ t('query-label') }}</mat-label>
+            <input matInput type="text" [formControl]="query" [placeholder]="t('query-placeholder')">
+            <button mat-icon-button matSuffix type="submit" class="me-1" [attr.aria-label]="t('hero.cta-start')">
+              <fa-icon icon="magnifying-glass"></fa-icon>
+            </button>
+          </mat-form-field>
+        </form>
+
+        <div class="home__ctas">
+          <button mat-flat-button type="button" class="home__start" (click)="search()">{{ t('hero.cta-start') }}</button>
+          <button mat-button type="button" class="home__how-link" (click)="showHow()">
+            {{ t('hero.cta-how') }}
+            <fa-icon icon="chevron-down"></fa-icon>
           </button>
-        </mat-form-field>
-      </form>
-
-      <div class="d-flex flex-wrap gap-3">
-        <a mat-flat-button [routerLink]="['/', lang$$(), 'search']">{{ t('cta-search') }}</a>
-        <a mat-stroked-button [routerLink]="['/', lang$$(), 'index']">{{ t('cta-index') }}</a>
+        </div>
       </div>
 
-      <div class="themis-rule-stack home__rules mt-5" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </section>
+      <p class="home__status themis-anim">{{ t('hero.status') }}</p>
+    </div>
 
-    <section class="col-lg-6">
-      <ol class="home__steps">
-        @for (step of steps; track step; let i = $index) {
-          <li class="home__step">
-            <span class="home__step-number" aria-hidden="true">0{{ i + 1 }}</span>
-            <div>
-              <h2 class="home__step-title">{{ t('steps.' + step + '.title') }}</h2>
-              <p class="home__step-body">{{ t('steps.' + step + '.body') }}</p>
-            </div>
-          </li>
-        }
-      </ol>
+    @if (playing$$()) {
+      <button mat-button type="button" class="home__skip" (click)="skip()">{{ t('hero.skip') }}</button>
+    }
+  </section>
+
+  <section class="container home__how" aria-labelledby="home-how">
+    <h2 id="home-how" class="home__how-title" tabindex="-1">{{ t('hero.cta-how') }}</h2>
+    <ol class="home__steps">
+      @for (step of steps; track step; let i = $index) {
+        <li class="home__step">
+          <span class="home__step-number" aria-hidden="true">0{{ i + 1 }}</span>
+          <div>
+            <h3 class="home__step-title">{{ t('steps.' + step + '.title') }}</h3>
+            <p class="home__step-body">{{ t('steps.' + step + '.body') }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+    <div class="home__how-footer">
       <p class="tagline home__disclaimer">{{ t('disclaimer') }}</p>
-    </section>
+      <a mat-stroked-button [routerLink]="['/', lang$$(), 'index']">{{ t('cta-index') }}</a>
+    </div>
+  </section>
 
-  </div>
 </main>

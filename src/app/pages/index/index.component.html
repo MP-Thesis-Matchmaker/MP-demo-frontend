@@ -48,12 +48,31 @@
         <h2 id="index-trigger-title" class="index__section-title">{{ t('trigger.title') }}</h2>
         <p class="index__muted">{{ t('trigger.body') }}</p>
 
+        <div class="index__danger" [class.index__danger--unlocked]="unlocked$$()">
+          <fa-icon icon="triangle-exclamation" class="index__danger-icon"></fa-icon>
+          <div class="index__danger-body">
+            <h3 class="index__danger-title">{{ t('danger.title') }}</h3>
+            <p class="index__muted m-0" aria-live="polite">{{ unlocked$$() ? t('danger.unlocked') : t('danger.body') }}</p>
+          </div>
+          @if (unlocked$$()) {
+            <button mat-button type="button" class="index__lock" (click)="lock()">
+              <fa-icon icon="lock"></fa-icon>
+              {{ t('danger.lock') }}
+            </button>
+          } @else {
+            <button mat-stroked-button type="button" class="index__unlock" (click)="unlock()">
+              <fa-icon icon="lock-open"></fa-icon>
+              {{ t('danger.unlock') }}
+            </button>
+          }
+        </div>
+
         <div class="d-flex flex-wrap gap-3">
-          <button mat-flat-button type="button" class="index__trigger" [disabled]="running$$()" (click)="trigger('publications')">
+          <button mat-flat-button type="button" class="index__trigger" [disabled]="!unlocked$$() || running$$()" (click)="trigger('publications')">
             <fa-icon icon="book"></fa-icon>
             {{ t('trigger.publications') }}
           </button>
-          <button mat-stroked-button type="button" class="index__trigger" [disabled]="running$$()" (click)="trigger('postings')">
+          <button mat-stroked-button type="button" class="index__trigger" [disabled]="!unlocked$$() || running$$()" (click)="trigger('postings')">
             <fa-icon icon="graduation-cap"></fa-icon>
             {{ t('trigger.postings') }}
           </button>

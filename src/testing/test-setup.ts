@@ -13,3 +13,7 @@ if (typeof window.matchMedia !== 'function') {
     removeListener: () => undefined
   })) as typeof window.matchMedia;
 }
+
+// jsdom has no canvas backend and logs "Not implemented: HTMLCanvasElement.prototype.getContext" for every
+// call. DotFieldComponent draws nothing without a context, which is what a spec wants anyway.
+HTMLCanvasElement.prototype.getContext = (() => null) as typeof HTMLCanvasElement.prototype.getContext;

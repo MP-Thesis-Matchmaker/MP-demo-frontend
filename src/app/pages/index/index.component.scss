@@ -69,6 +69,54 @@
   gap: .5rem;
 }
 
+// Danger Zone: locked in the error colour, unlocked fades to neutral so "armed" reads differently from "safe".
+.index__danger {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--mat-sys-error);
+  border-radius: .5rem;
+  background: color-mix(in srgb, var(--mat-sys-error) 6%, transparent);
+
+  &--unlocked {
+    border-style: dashed;
+    background: color-mix(in srgb, var(--mat-sys-error) 12%, transparent);
+  }
+}
+
+.index__danger-icon {
+  font-size: 1.4rem;
+  color: var(--mat-sys-error);
+}
+
+.index__danger-body {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.index__danger-title {
+  // html-tags.styles.scss zeroes heading margins with !important.
+  margin: 0 0 .25rem !important;
+  font-family: var(--themis-font-family-heading);
+  font-size: .95rem !important;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--mat-sys-error);
+}
+
+.index__unlock {
+  --mat-button-outlined-label-text-color: var(--mat-sys-error);
+  --mat-button-outlined-outline-color: var(--mat-sys-error);
+  gap: .5rem;
+}
+
+.index__lock {
+  gap: .5rem;
+}
+
 .index__watched {
   display: flex;
   gap: 1rem;

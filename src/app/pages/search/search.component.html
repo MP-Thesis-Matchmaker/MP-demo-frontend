@@ -1,20 +1,30 @@
-<main class="container py-5" *transloco="let t; prefix: 'pages.search'">
-  <p class="themis-eyebrow mb-2">{{ t('eyebrow') }}</p>
+<main class="container py-5 search" [class.search--fresh]="fresh$$()" [class.search--morph]="morph$$()"
+      *transloco="let t; prefix: 'pages.search'">
+  <themis-dot-field class="search__field"></themis-dot-field>
+
+  <p class="themis-eyebrow mb-3 search__eyebrow">{{ t('eyebrow') }}</p>
   <h1 class="search__title">{{ t('title') }}</h1>
 
-  <form class="search__form mt-4" [formGroup]="form" (ngSubmit)="submit()">
-    <mat-form-field appearance="outline" class="search__query">
+  <form class="search__form" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline" class="search__query" subscriptSizing="dynamic">
       <mat-label>{{ t('query-label') }}</mat-label>
       <textarea
+        #queryArea
         matInput
+        class="search__textarea"
         formControlName="query"
         cdkTextareaAutosize
-        cdkAutosizeMinRows="2"
-        cdkAutosizeMaxRows="8"
         [placeholder]="t('query-placeholder')"
         (keydown.control.enter)="submit()"
-        (keydown.meta.enter)="submit()"></textarea>
-      <mat-hint>{{ t('query-hint') }}</mat-hint>
+        (keydown.meta.enter)="submit()"
+        (pointerdown)="startManualResize()"></textarea>
+      <mat-hint>
+        @if (overlap$$(); as overlap) {
+          <span class="search__overlap themis-anim">{{ t('matches.overlap', overlap) }}</span>
+        } @else {
+          {{ t('query-hint') }}
+        }
+      </mat-hint>
     </mat-form-field>
 
     <div class="search__controls">
@@ -52,8 +62,8 @@
   } @else if (sharedError$$(); as error) {
     <themis-matcher-error class="mt-5" [error]="error"></themis-matcher-error>
   } @else {
-    <div class="row gy-5 gx-lg-5 mt-2">
-      <section class="col-lg-7" aria-labelledby="search-matches-title">
+    <div class="row gy-5 gx-lg-5 mt-4">
+      <section class="col-lg-7 search__matches-column" aria-labelledby="search-matches-title">
         <h2 id="search-matches-title" class="search__section-title">
           {{ t('matches.title') }}
           @if (matches.hasValue()) {
@@ -61,9 +71,12 @@
           }
         </h2>
 
+        <p class="visually-hidden" aria-live="polite">{{ phase$$() === 'revealed' ? '' : t('matches.loading') }}</p>
         @if (matches.isLoading()) {
-          <div class="search__loading">
-            <mat-spinner diameter="28"></mat-spinner>
+          <div class="search__loading" aria-hidden="true">
+            @if (reducedMotion$$()) {
+              <mat-spinner diameter="28"></mat-spinner>
+            }
             <div>
               <p class="m-0">{{ t('matches.loading') }}</p>
               <p class="search__hint">{{ t('matches.loading-hint') }}</p>
@@ -72,9 +85,9 @@
         } @else if (matchError$$(); as error) {
           <themis-matcher-error [error]="error"></themis-matcher-error>
         } @else if (matches.hasValue()) {
-          <ol class="search__matches">
+          <ol class="search__matches" [class.search__matches--pending]="phase$$() !== 'revealed'">
             @for (match of matches.value().matches; track $index; let i = $index) {
-              <li><themis-match-card [match]="match" [rank]="i + 1"></themis-match-card></li>
+              <li class="search__match themis-anim" [style.--i]="i < 6 ? i : 6"><themis-match-card [match]="match" [rank]="i + 1"></themis-match-card></li>
             } @empty {
               <li class="empty-info-box">
                 <h3 class="empty-info-box__title">{{ t('matches.empty.title') }}</h3>

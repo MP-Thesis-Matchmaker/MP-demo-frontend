@@ -66,6 +66,9 @@
       display: block;
       height: 100%;
       background: var(--themis-accent);
+      // Fills as the card arrives; --i is the card's place in the shortlist, set by the search page.
+      transform-origin: left;
+      animation: match-card-fill .9s var(--themis-ease-draw) calc(var(--i, 0) * .35s + .5s) both;
     }
   }
 
@@ -140,6 +143,23 @@
   &__more {
     margin-top: .5rem;
     margin-left: -.75rem;
+  }
+}
+
+@keyframes match-card-fill {
+  from {
+    scale: 0 1;
+  }
+}
+
+// Held while the search page lays out the shortlist behind its dots.
+:host-context(.search__matches--pending) .match-card__score-bar > span {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .match-card__score-bar > span {
+    animation: none;
   }
 }
 

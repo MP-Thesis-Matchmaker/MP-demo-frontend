@@ -82,14 +82,21 @@
       }
     },
     "confirm-dialog": {
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "phrase-label": "Zur Bestätigung eintippen:"
     }
   },
   "pages": {
     "home": {
-      "eyebrow": "Universität Zürich · Masterprojekt 2026",
-      "title": "Die passende Betreuung für deine Arbeit finden.",
-      "tagline": "THEsis Matching and Information System",
+      "hero": {
+        "kicker": "Thesis Matching and Information System",
+        "arrive": "Fang bei der Arbeit an, die du machen willst.",
+        "lede": "Finde die passende Betreuung für deine Abschlussarbeit.",
+        "cta-start": "Anfrage starten",
+        "cta-how": "So funktioniert das Matching",
+        "status": "Ein benotetes Masterprojekt an der Universität Zürich. Kein offizieller Dienst der Universität.",
+        "skip": "Intro überspringen"
+      },
       "steps": {
         "describe": {
           "title": "Beschreiben",
@@ -107,7 +114,6 @@
       "disclaimer": "Orientierung, keine Empfehlung.",
       "query-label": "Woran möchtest du arbeiten?",
       "query-placeholder": "z. B. eine Masterarbeit in NLP zu Retrieval-Augmented Generation",
-      "cta-search": "Anfrage ausprobieren",
       "cta-index": "Zum Index"
     },
     "search": {
@@ -135,7 +141,8 @@
         "empty": {
           "title": "Keine Treffer",
           "body": "Niemand im Index passt zu dieser Anfrage. Versuche, sie anders zu formulieren."
-        }
+        },
+        "overlap": "{records, plural, one {# indexierter Eintrag passt} other {# indexierte Einträge passen}} zu deiner Anfrage · {supervisors, plural, one {# Betreuungsperson} other {# Betreuende}} nach Rang"
       }
     },
     "index": {
@@ -157,9 +164,21 @@
       },
       "trigger": {
         "title": "Neu indexieren",
-        "body": "Läuft im Hintergrund auf dem Matcher. Unveränderte Dokumente werden übersprungen; es kann immer nur ein Lauf den Index belegen.",
+        "body": "Läuft im Hintergrund auf dem Matcher. Unveränderte Dokumente werden übersprungen; es kann immer nur ein Lauf den Index belegen. Die Schaltflächen bleiben gesperrt, bis du das Neuindexieren in der Gefahrenzone freigibst.",
         "publications": "Publikationen neu indexieren",
         "postings": "Ausschreibungen neu indexieren"
+      },
+      "danger": {
+        "title": "Gefahrenzone",
+        "body": "Neuindexieren kann indexierte Dokumente löschen, die in der konfigurierten Quelle fehlen. Die Schaltflächen unten sind gesperrt.",
+        "unlock": "Neuindexieren freigeben",
+        "unlocked": "Neuindexieren ist für einen Lauf freigegeben. Ein gestarteter Lauf sperrt es wieder.",
+        "lock": "Wieder sperren"
+      },
+      "unlock": {
+        "title": "Neuindexieren freigeben?",
+        "body": "Ein Neuindexieren ersetzt, was der Matcher durchsucht. Gib es nur frei, wenn du jetzt einen Lauf starten willst.",
+        "confirm": "Freigeben"
       },
       "confirm": {
         "start": "Lauf starten",
